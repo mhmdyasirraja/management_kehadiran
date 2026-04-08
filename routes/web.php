@@ -26,6 +26,11 @@ Route::get('/riwayat', function () {
     return view('Karyawan.riwayat');
 });
 
+
+Route::get('/laporan', function () {
+    return view('Karyawan.laporan');
+});
+
 Route::get('/pengajuan', function () {
     return view('Karyawan.pengajuan');
 });
