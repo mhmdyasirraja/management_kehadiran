@@ -17,3 +17,15 @@ Route::prefix('management')->group(function () {
         return view('management.karyawan');
     })->name('management.karyawan');
 });
+
+Route::get('/absensi', function () {
+    return view('Karyawan.absensi');
+});
+
+Route::get('/riwayat', function () {
+    return view('Karyawan.riwayat');
+});
+
+Route::get('/pengajuan', function () {
+    return view('Karyawan.pengajuan');
+});
