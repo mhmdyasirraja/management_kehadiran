@@ -7,35 +7,19 @@ Route::get('/', function () {
 });
 
 Route::view('/login', 'login');
-Route::view('/dashboard', 'dashboard');
-Route::prefix('management')->group(function () {
-    Route::get('/divisi', function () {
-        return view('management.divisi');
-    })->name('management.divisi');
+Route::prefix('admin')->group(function () {
+    Route::view('/dashboard', 'admin.dashboard');
+    Route::view('/divisi', 'admin.divisi');
+    Route::view('/karyawan', 'admin.karyawan');
+    Route::view('/approval', 'admin.approval');
+    Route::view('/laporan', 'admin.laporan');
+    Route::view('/pengaturan', 'admin.pengaturan');
+});
 
-    Route::get('/karyawan', function () {
-        return view('management.karyawan');
-    })->name('management.karyawan');
-
-    Route::get('/approval', function () {
-        return view('management.approval');
-        })->name('management.approval');
-    });
 Route::prefix('karyawan')->group(function () {
-    Route::get('/absensi', function () {
-        return view('karyawan.absensi');
-        })->name('karyawan.absensi');
 
-    Route::get('/laporan', function () {
-        return view('karyawan.laporan');
-        })->name('karyawan.laporan');
-
-    Route::get('/pengajuan', function () {
-        return view('karyawan.pengajuan');
-        })->name('karyawan.pengajuan');
-
-    Route::get('/riwayat', function () {
-        return view('karyawan.riwayat');
-        })->name('karyawan.riwayat');
-
-    });
+    Route::view('/dashboard', 'karyawan.dashboard');
+    Route::view('/absensi', 'karyawan.absensi');
+    Route::view('/perizinan', 'karyawan.pengajuan');
+    Route::view('/riwayat', 'karyawan.riwayat');
+});

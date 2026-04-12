@@ -1,3 +1,0 @@
-<div>
-    SELAMAT DATANG DI LAPORAN ABSENSI
-</div>
