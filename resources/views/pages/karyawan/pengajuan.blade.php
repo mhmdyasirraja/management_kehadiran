@@ -1,4 +1,4 @@
-@extends('layouts.sidebar', ['role' => 'karyawan'])
+@extends('layouts.app')
 
 @section('content')
 

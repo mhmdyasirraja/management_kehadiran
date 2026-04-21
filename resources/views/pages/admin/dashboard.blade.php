@@ -1,6 +1,7 @@
-@extends('layouts.sidebar', ['role' => 'admin'])
+@extends('layouts.app')
 
 @section('content')
+
 
 <div class="space-y-6">
 
@@ -41,11 +42,9 @@
     {{-- TABLE --}}
     <div class="bg-white rounded-xl shadow-sm p-6">
 
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold text-gray-800">
-                Absensi Terbaru
-            </h2>
-        </div>
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">
+            Absensi Terbaru
+        </h2>
 
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">

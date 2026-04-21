@@ -1,4 +1,4 @@
-@extends('layouts.sidebar', ['role' => 'admin'])
+@extends('layouts.app')
 
 @section('content')
 
