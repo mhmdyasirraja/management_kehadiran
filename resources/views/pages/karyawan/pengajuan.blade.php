@@ -98,16 +98,6 @@
                         -
                     </td>
                 </tr>
-
-                <!-- Empty State -->
-                {{--
-                <tr>
-                    <td colspan="4" class="text-center py-10 text-gray-400">
-                        Belum ada pengajuan izin
-                    </td>
-                </tr>
-                --}}
-
             </tbody>
 
         </table>
