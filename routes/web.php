@@ -1,19 +1,27 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\DivisiController;
+use App\Http\Controllers\Admin\KaryawanController;
 
 // Route utama
+//Route::get('/', function () {
+  //  return view('welcome');
+//});
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('landing');
 });
 
 // Route login
-Route::view('/login', 'login');
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
 
 Route::prefix('admin')->group(function () {
     Route::view('/dashboard', 'pages.admin.dashboard', ['role' => 'admin']);
-    Route::view('/divisi', 'pages.admin.divisi', ['role' => 'admin']);
-    Route::view('/karyawan', 'pages.admin.karyawan', ['role' => 'admin']);
+    Route::get('/divisi', [DivisiController::class, 'index']);
+    Route::get('/karyawan', [KaryawanController::class, 'index']);
     Route::view('/approval', 'pages.admin.approval', ['role' => 'admin']);
     Route::view('/laporan', 'pages.admin.laporan', ['role' => 'admin']);
     Route::view('/pengaturan', 'pages.admin.pengaturan', ['role' => 'admin']);

@@ -39,53 +39,22 @@
 
             <tbody class="divide-y">
 
+                @foreach($divisi as $index => $item)
                 <tr class="hover:bg-gray-50 transition">
-                    <td class="py-3">1</td>
-                    <td class="py-3 font-medium">IT</td>
-                    <td class="py-3">10</td>
-                    <td class="py-3">Divisi Teknologi & Sistem</td>
-                    <td class="py-3">12 Feb 2026</td>
-                    <td class="py-3 text-center space-x-3">
-                        <button class="text-blue-500 text-sm hover:underline">Edit</button>
-                        <button class="text-red-500 text-sm hover:underline">Delete</button>
-                    </td>
-                </tr>
 
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="py-3">2</td>
-                    <td class="py-3 font-medium">HRD</td>
-                    <td class="py-3">5</td>
-                    <td class="py-3">Manajemen SDM</td>
-                    <td class="py-3">10 Feb 2026</td>
-                    <td class="py-3 text-center space-x-3">
-                        <button class="text-blue-500 text-sm hover:underline">Edit</button>
-                        <button class="text-red-500 text-sm hover:underline">Delete</button>
-                    </td>
-                </tr>
+                    <td class="py-3">{{ $index + 1 }}</td>
+                    <td class="py-3 font-medium">{{ $item['nama'] }}</td>
+                    <td class="py-3">{{ $item['jumlah'] }}</td>
+                    <td class="py-3">{{ $item['deskripsi'] }}</td>
+                    <td class="py-3">{{ $item['tanggal'] }}</td>
 
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="py-3">3</td>
-                    <td class="py-3 font-medium">Finance</td>
-                    <td class="py-3">7</td>
-                    <td class="py-3">Keuangan & Akuntansi</td>
-                    <td class="py-3">08 Feb 2026</td>
                     <td class="py-3 text-center space-x-3">
                         <button class="text-blue-500 text-sm hover:underline">Edit</button>
                         <button class="text-red-500 text-sm hover:underline">Delete</button>
                     </td>
-                </tr>
 
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="py-3">4</td>
-                    <td class="py-3 font-medium">Marketing</td>
-                    <td class="py-3">6</td>
-                    <td class="py-3">Promosi & Branding</td>
-                    <td class="py-3">05 Feb 2026</td>
-                    <td class="py-3 text-center space-x-3">
-                        <button class="text-blue-500 text-sm hover:underline">Edit</button>
-                        <button class="text-red-500 text-sm hover:underline">Delete</button>
-                    </td>
                 </tr>
+                @endforeach
 
             </tbody>
 

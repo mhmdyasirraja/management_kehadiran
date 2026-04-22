@@ -36,7 +36,8 @@
                 Perizinan
             </h2>
 
-            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600">
+            <button onclick="openModal('izinModal')"
+                class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600">
                 Ajukan Izin
             </button>
         </div>
@@ -110,6 +111,71 @@
             </tbody>
 
         </table>
+
+        <x-modal id="izinModal" title="Ajukan Izin">
+
+            <form action="#" method="POST" class="space-y-5">
+                @csrf
+
+                <!-- Jenis Izin -->
+                <div>
+                    <label class="text-xs text-gray-400">Jenis Izin</label>
+                    <select name="jenis"
+                        class="w-full mt-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                        <option value="">Pilih jenis izin</option>
+                        <option value="cuti">Cuti</option>
+                        <option value="sakit">Sakit</option>
+                        <option value="izin">Izin</option>
+                    </select>
+                </div>
+
+                <!-- Tanggal -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-gray-400">Dari</label>
+                        <input type="date" name="tanggal"
+                            class="w-full mt-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-gray-400">Sampai</label>
+                        <input type="date" name="sampai"
+                            class="w-full mt-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Keterangan -->
+                <div>
+                    <label class="text-xs text-gray-400">Keterangan</label>
+                    <textarea name="keterangan" rows="3"
+                        placeholder="Contoh: keperluan keluarga, sakit, dll..."
+                        class="w-full mt-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:outline-none transition resize-none"></textarea>
+                </div>
+
+                <!-- Upload (opsional) -->
+                <div>
+                    <label class="text-xs text-gray-400">Upload Bukti (opsional)</label>
+                    <input type="file"
+                        class="w-full mt-1 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100">
+                </div>
+
+                <!-- Button -->
+                <div class="flex justify-end gap-3 pt-3">
+                    <button type="button"
+                        onclick="closeModal('izinModal')"
+                        class="px-5 py-2 rounded-lg border text-gray-600 hover:bg-gray-100 transition">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                        class="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition shadow-sm">
+                        Kirim
+                    </button>
+                </div>
+
+            </form>
+
+        </x-modal>
 
     </div>
 

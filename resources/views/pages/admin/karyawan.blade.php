@@ -43,51 +43,24 @@
 
             <tbody class="divide-y">
 
+                @foreach($karyawan as $item)
                 <tr class="hover:bg-gray-50 transition">
-                    <td class="py-3">1</td>
-                    <td class="py-3 font-medium">Muhammad Yasir</td>
-                    <td class="py-3">IT</td>
-                    <td class="py-3">Backend Developer</td>
-                    <td class="py-3 text-center space-x-3">
-                        <button class="text-blue-500 text-sm hover:underline">Edit</button>
-                        <button class="text-red-500 text-sm hover:underline">Delete</button>
-                    </td>
-                </tr>
 
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="py-3">2</td>
-                    <td class="py-3 font-medium">Andi</td>
-                    <td class="py-3">HRD</td>
-                    <td class="py-3">HR Staff</td>
-                    <td class="py-3 text-center space-x-3">
-                        <button class="text-blue-500 text-sm hover:underline">Edit</button>
-                        <button class="text-red-500 text-sm hover:underline">Delete</button>
-                    </td>
-                </tr>
+                    <td class="py-3">{{ $item['id'] }}</td>
+                    <td class="py-3 font-medium">{{ $item['nama'] }}</td>
+                    <td class="py-3">{{ $item['divisi'] }}</td>
+                    <td class="py-3">{{ $item['jabatan'] }}</td>
 
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="py-3">3</td>
-                    <td class="py-3 font-medium">Budi</td>
-                    <td class="py-3">Finance</td>
-                    <td class="py-3">Accountant</td>
                     <td class="py-3 text-center space-x-3">
                         <button class="text-blue-500 text-sm hover:underline">Edit</button>
                         <button class="text-red-500 text-sm hover:underline">Delete</button>
                     </td>
-                </tr>
 
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="py-3">4</td>
-                    <td class="py-3 font-medium">Sinta</td>
-                    <td class="py-3">Marketing</td>
-                    <td class="py-3">Content Specialist</td>
-                    <td class="py-3 text-center space-x-3">
-                        <button class="text-blue-500 text-sm hover:underline">Edit</button>
-                        <button class="text-red-500 text-sm hover:underline">Delete</button>
-                    </td>
                 </tr>
+                @endforeach
 
             </tbody>
+            
         </table>
 
         <x-modal id="modalKaryawan" title="Tambah Karyawan">
