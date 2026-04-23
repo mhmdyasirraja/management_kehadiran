@@ -85,6 +85,18 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-600 mb-1">
+                        Jumlah Karyawan
+                    </label>
+
+                    <input
+                        type="number"
+                        min="0"
+                        placeholder="Contoh: 10"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">
                         Deskripsi
                     </label>
 
@@ -124,6 +136,15 @@
                         <input
                             type="text"
                             value="{{ $item['nama'] ?? '' }}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Jumlah Karyawan</label>
+                        <input
+                            type="number"
+                            min="0"
+                            value="{{ $item['jumlah'] ?? 0 }}"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
                     </div>
 

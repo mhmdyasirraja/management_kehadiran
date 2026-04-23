@@ -8,7 +8,7 @@
 
             <!-- LOGO -->
             <div class="flex items-center gap-2 mb-8">
-                <span class="font-semibold text-gray-800 text-lg">Karyawan App</span>
+                <span class="font-semibold text-gray-800 text-lg">Absenku</span>
             </div>
 
             <!-- MENU -->

@@ -105,10 +105,12 @@
 
                     <select
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
-                        <option>Pilih Divisi</option>
-                        <option>IT</option>
-                        <option>HRD</option>
-                        <option>Finance</option>
+                        <option value="">Pilih Divisi</option>
+                        <option value="IT">IT</option>
+                        <option value="HRD">HRD</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Digital Marketing">Digital Marketing</option>
                     </select>
                 </div>
 
@@ -154,10 +156,14 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Divisi</label>
-                        <input
-                            type="text"
-                            value="{{ $item['divisi'] ?? '' }}"
+                        <select
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                            <option value="IT" {{ ($item['divisi'] ?? '') == 'IT' ? 'selected' : '' }}>IT</option>
+                            <option value="HRD" {{ ($item['divisi'] ?? '') == 'HRD' ? 'selected' : '' }}>HRD</option>
+                            <option value="Finance" {{ ($item['divisi'] ?? '') == 'Finance' ? 'selected' : '' }}>Finance</option>
+                            <option value="Marketing" {{ ($item['divisi'] ?? '') == 'Marketing' ? 'selected' : '' }}>Marketing</option>
+                            <option value="Digital Marketing" {{ ($item['divisi'] ?? '') == 'Digital Marketing' ? 'selected' : '' }}>Digital Marketing</option>
+                        </select>
                     </div>
 
                     <div>

@@ -6,7 +6,7 @@
 
     {{-- HEADER --}}
     @include('components.header_card', [
-    'title' => 'DASHBOARD KARYAWAN',
+    'title' => 'Absensi Karyawan',
     'subtitle' => now()->format('l, d F Y')
     ])
 
