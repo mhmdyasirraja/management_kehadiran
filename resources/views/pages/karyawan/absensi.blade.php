@@ -26,9 +26,16 @@
             </p>
         </div>
 
-        <button class="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600">
+        <form action="/karyawan/checkin" method="POST">
+            @csrf
+
+            <button
+            type="submit"
+            class="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600">
             Check In
-        </button>
+</button>
+</form>
+
 
     </div>
 

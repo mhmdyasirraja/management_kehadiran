@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DivisiController;
 use App\Http\Controllers\Admin\KaryawanController;
+use App\Http\Controllers\Karyawan\AbsensiController;
 
 // Route utama
 //Route::get('/', function () {
@@ -32,4 +33,5 @@ Route::prefix('karyawan')->group(function () {
     Route::view('/absensi', 'pages.karyawan.absensi', ['role' => 'karyawan']);
     Route::view('/perizinan', 'pages.karyawan.pengajuan', ['role' => 'karyawan']);
     Route::view('/riwayat', 'pages.karyawan.riwayat', ['role' => 'karyawan']);
+    Route::post('/checkin', [AbsensiController::class, 'checkIn']);
 });
