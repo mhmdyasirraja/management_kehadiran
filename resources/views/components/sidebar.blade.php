@@ -14,7 +14,7 @@
             <!-- MENU -->
             <nav class="flex flex-col gap-2 text-sm">
 
-                @if(($role ?? '') === 'admin')
+                @if(auth()->user()->role === 'admin')
 
                 <a href="{{ url('/admin/dashboard') }}"
                     class="px-3 py-2 rounded-lg {{ request()->is('admin/dashboard') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
@@ -46,7 +46,7 @@
                     Pengaturan
                 </a>
 
-                @elseif(($role ?? '') === 'karyawan')
+                 @elseif(auth()->user()->role === 'karyawan')
 
                 <a href="{{ url('/karyawan/dashboard') }}"
                     class="px-3 py-2 rounded-lg {{ request()->is('karyawan/dashboard') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">

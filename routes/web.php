@@ -2,8 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DivisiController;
-use App\Http\Controllers\Admin\KaryawanController;
+use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\Karyawan\AbsensiController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\IzinController;
 
 // Route utama
 //Route::get('/', function () {
@@ -19,6 +21,9 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
+Route::post('/login', [LoginController::class, 'login'])
+    ->name('login.process');
+
 Route::prefix('admin')->group(function () {
     Route::view('/dashboard', 'pages.admin.dashboard', ['role' => 'admin']);
     Route::get('/divisi', [DivisiController::class, 'index']);
@@ -29,9 +34,20 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::prefix('karyawan')->group(function () {
-    Route::view('/dashboard', 'pages.karyawan.dashboard', ['role' => 'karyawan']);
-    Route::view('/absensi', 'pages.karyawan.absensi', ['role' => 'karyawan']);
+    Route::get('/absensi', [AbsensiController::class, 'formCheckIn']);
     Route::view('/perizinan', 'pages.karyawan.pengajuan', ['role' => 'karyawan']);
     Route::view('/riwayat', 'pages.karyawan.riwayat', ['role' => 'karyawan']);
+});
+
+Route::middleware(['auth'])
+    ->prefix('karyawan')
+    ->group(function () {
+    Route::get('/dashboard',  [KaryawanController::class, 'dashboard']);
+    Route::get('/checkin', [AbsensiController::class, 'formCheckIn']);
     Route::post('/checkin', [AbsensiController::class, 'checkIn']);
+    Route::get('/checkout', [AbsensiController::class, 'formCheckOut']);
+    Route::post('/checkout', [AbsensiController::class, 'checkOut']);
+    Route::get('/izin',          [IzinController::class, 'form']);
+    Route::post('/izin',         [IzinController::class, 'ajukan']);
+    Route::get('/izin/riwayat',  [IzinController::class, 'riwayat']);
 });

@@ -49,7 +49,7 @@
             @endif
 
             {{-- Form --}}
-            <form method="POST" action="{{ route('login') }}" class="space-y-5">
+            <form method="POST" action="{{ route('login.process') }}">
                 @csrf
 
                 {{-- Email --}}
@@ -120,7 +120,7 @@
                 {{-- Button --}}
                 <button
                     type="submit"
-                    class="w-full bg-blue-600 text-white py-3 rounded-xl text-sm font-medium hover:bg-blue-700 transition"
+                    class="w-full mt-4 bg-blue-600 text-white py-3 rounded-xl text-sm font-medium hover:bg-blue-700 transition"
                 >
                     Masuk
                 </button>
