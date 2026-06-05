@@ -2,10 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DivisiController;
-use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\Admin\KaryawanController;
+use App\Http\Controllers\Karyawan\DashboardController;
 use App\Http\Controllers\Karyawan\AbsensiController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\IzinController;
+use App\Http\Controllers\Karyawan\IzinController;
 
 // Route utama
 //Route::get('/', function () {
@@ -35,19 +36,17 @@ Route::prefix('admin')->group(function () {
 
 Route::prefix('karyawan')->group(function () {
     Route::get('/absensi', [AbsensiController::class, 'formCheckIn']);
-    Route::view('/perizinan', 'pages.karyawan.pengajuan', ['role' => 'karyawan']);
     Route::view('/riwayat', 'pages.karyawan.riwayat', ['role' => 'karyawan']);
 });
 
 Route::middleware(['auth'])
     ->prefix('karyawan')
     ->group(function () {
-    Route::get('/dashboard',  [KaryawanController::class, 'dashboard']);
+    Route::get('/dashboard',  [DashboardController::class, 'dashboard']);
     Route::get('/checkin', [AbsensiController::class, 'formCheckIn']);
     Route::post('/checkin', [AbsensiController::class, 'checkIn']);
     Route::get('/checkout', [AbsensiController::class, 'formCheckOut']);
     Route::post('/checkout', [AbsensiController::class, 'checkOut']);
-    Route::get('/izin',          [IzinController::class, 'form']);
-    Route::post('/izin',         [IzinController::class, 'ajukan']);
-    Route::get('/izin/riwayat',  [IzinController::class, 'riwayat']);
+    Route::get('/izin', [IzinController::class, 'index']);
+    Route::post('/izin', [IzinController::class, 'store']);
 });

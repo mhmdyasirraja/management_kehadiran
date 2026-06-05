@@ -58,10 +58,10 @@
                     Absensi
                 </a>
 
-                <a href="{{ url('/karyawan/perizinan') }}"
-                    class="px-3 py-2 rounded-lg {{ request()->is('karyawan/perizinan*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                    Perizinan
-                </a>
+                <a href="{{ url('/karyawan/izin') }}"
+                class="px-3 py-2 rounded-lg {{ request()->is('karyawan/izin*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                Perizinan
+            </a>
 
                 <a href="{{ url('/karyawan/riwayat') }}"
                     class="px-3 py-2 rounded-lg {{ request()->is('karyawan/riwayat*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">

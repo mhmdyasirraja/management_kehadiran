@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Karyawan;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kehadiran;
 use App\Models\Izin;
 use Carbon\Carbon;
 
-class KaryawanController extends Controller
+class DashboardController extends Controller
 {
     public function dashboard()
     {

@@ -136,15 +136,14 @@
 
     {{-- Modal Ajukan Izin --}}
     <x-modal id="izinModal" title="Ajukan Perizinan">
-        <form action="#" method="POST" class="space-y-5" enctype="multipart/form-data">
+        <form action="/karyawan/izin" method="POST" class="space-y-5" enctype="multipart/form-data">
             @csrf
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Izin</label>
-                <select name="jenis"
+                <select name="jenis_izin"
                     class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                     <option value="">Pilih jenis izin</option>
-                    <option value="cuti">Cuti</option>
                     <option value="sakit">Sakit</option>
                     <option value="izin">Izin</option>
                 </select>
@@ -173,7 +172,7 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Upload Bukti (Opsional)</label>
-                <input type="file" name="bukti"
+                <input type="file" name="surat_keterangan"
                     class="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                 <p class="text-xs text-gray-400 mt-2">
                     Format file yang disarankan: PDF, JPG, PNG.
