@@ -3,52 +3,53 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Divisi;
+use Illuminate\Http\Request;
 
 class DivisiController extends Controller
 {
+    // Ambil semua data dari DB
     public function index()
     {
-        $divisi = [
-            [
-                'id' => 1,
-                'nama' => 'IT',
-                'jumlah' => 10,
-                'deskripsi' => 'Divisi Teknologi & Sistem',
-                'tanggal' => '12 Feb 2026'
-            ],
-            [
-                'id' => 2,
-                'nama' => 'HRD',
-                'jumlah' => 5,
-                'deskripsi' => 'Manajemen SDM',
-                'tanggal' => '10 Feb 2026'
-            ],
-            [
-                'id' => 3,
-                'nama' => 'Finance',
-                'jumlah' => 7,
-                'deskripsi' => 'Keuangan & Akuntansi',
-                'tanggal' => '08 Feb 2026'
-            ],
-            [
-                'id' => 4,
-                'nama' => 'Marketing',
-                'jumlah' => 6,
-                'deskripsi' => 'Promosi & Branding',
-                'tanggal' => '05 Feb 2026'
-            ],
-             [
-                'id' => 5,
-                'nama' => 'Digital Marketing',
-                'jumlah' => 6,
-                'deskripsi' => 'Promosi & Branding',
-                'tanggal' => '06 Feb 2026'
-            ],
-        ];
+        $divisi = Divisi::oldest()->get();
 
         return view('pages.admin.divisi', [
             'divisi' => $divisi,
             'role' => 'admin'
         ]);
+    }
+
+    // Simpan divisi baru
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama'      => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        Divisi::create($request->only('nama', 'deskripsi'));
+
+        return redirect()->route('divisi.index')->with('success', 'Divisi berhasil ditambahkan.');
+    }
+
+    // Update divisi
+    public function update(Request $request, Divisi $divisi)
+    {
+        $request->validate([
+            'nama'      => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        $divisi->update($request->only('nama', 'deskripsi'));
+
+        return redirect()->route('divisi.index')->with('success', 'Divisi berhasil diupdate.');
+    }
+
+    // Hapus divisi
+    public function destroy(Divisi $divisi)
+    {
+        $divisi->delete();
+
+        return redirect()->route('divisi.index')->with('success', 'Divisi berhasil dihapus.');
     }
 }
