@@ -29,8 +29,8 @@ Route::prefix('admin')->group(function () {
     Route::view('/dashboard', 'pages.admin.dashboard', ['role' => 'admin']);
 
     Route::resource('/divisi', DivisiController::class);
-
-    Route::get('/karyawan', [KaryawanController::class, 'index']);
+    Route::resource('/karyawan', KaryawanController::class);
+    
     Route::view('/approval', 'pages.admin.approval', ['role' => 'admin']);
     Route::view('/laporan', 'pages.admin.laporan', ['role' => 'admin']);
     Route::view('/pengaturan', 'pages.admin.pengaturan', ['role' => 'admin']);
