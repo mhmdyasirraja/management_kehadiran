@@ -74,6 +74,19 @@ class KaryawanController extends Controller
         return redirect()->back()->with('success', 'Karyawan berhasil diupdate.');
     }
 
+    public function updateStatus($id)
+    {
+        $karyawan = Karyawan::findOrFail($id);
+
+        $karyawan->status = $karyawan->status === 'aktif'
+            ? 'nonaktif'
+            : 'aktif';
+
+        $karyawan->save();
+
+        return redirect()->back()->with('success', 'Status karyawan berhasil diubah.');
+    }
+
     public function destroy(Karyawan $karyawan)
     {
         // Hapus user 

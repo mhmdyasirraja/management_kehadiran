@@ -1,4 +1,3 @@
-
 <body class="bg-gray-100">
 
     <div class="flex min-h-screen">
@@ -14,7 +13,8 @@
             <!-- MENU -->
             <nav class="flex flex-col gap-2 text-sm">
 
-                @if(auth()->user()->role === 'admin')
+                {{-- ✅ Cek guard admin dulu, lalu karyawan --}}
+                @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->role === 'admin')
 
                 <a href="{{ url('/admin/dashboard') }}"
                     class="px-3 py-2 rounded-lg {{ request()->is('admin/dashboard') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
@@ -46,7 +46,7 @@
                     Pengaturan
                 </a>
 
-                 @elseif(auth()->user()->role === 'karyawan')
+                @elseif(Auth::guard('karyawan')->check() && Auth::guard('karyawan')->user()->role === 'karyawan')
 
                 <a href="{{ url('/karyawan/dashboard') }}"
                     class="px-3 py-2 rounded-lg {{ request()->is('karyawan/dashboard') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
@@ -54,14 +54,14 @@
                 </a>
 
                 <a href="{{ url('/karyawan/absensi') }}"
-                    class="px-3 py-2 rounded-lg {{ request()->is('karyawan/absensi*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                    class="px-3 py-2 rounded-lg {{ request()->is('karyawan/checkin*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
                     Absensi
                 </a>
 
                 <a href="{{ url('/karyawan/izin') }}"
-                class="px-3 py-2 rounded-lg {{ request()->is('karyawan/izin*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                Perizinan
-            </a>
+                    class="px-3 py-2 rounded-lg {{ request()->is('karyawan/izin*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                    Perizinan
+                </a>
 
                 <a href="{{ url('/karyawan/riwayat') }}"
                     class="px-3 py-2 rounded-lg {{ request()->is('karyawan/riwayat*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
@@ -74,17 +74,20 @@
 
             <!-- BOTTOM -->
             <div class="mt-auto pt-6 border-t border-gray-200">
-                <a href="/logout"
-                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 hover:bg-gray-100">
-                    <span>Logout</span>
-                </a>
+                {{-- ✅ Logout harus POST bukan GET --}}
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 hover:bg-gray-100">
+                        <span>Logout</span>
+                    </button>
+                </form>
             </div>
 
         </aside>
 
-
     </div>
-    
+
 </body>
 
 </html>

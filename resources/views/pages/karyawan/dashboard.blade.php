@@ -2,13 +2,22 @@
 
 @section('content')
 
+{{-- ✅ Simpan user di variable biar ga berulang --}}
+@php
+$user = Auth::guard('karyawan')->user();
+$profil = $user->karyawan;
+@endphp
+
 <div class="space-y-6">
 
     {{-- Header --}}
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800">Selamat Datang, Yasir</h1>
+                {{-- ✅ Pakai optional() biar aman kalau relasi karyawan null --}}
+                <h1 class="text-2xl font-bold text-gray-800">
+                    Selamat Datang, {{ optional($profil)->nama ?? $user->name ?? 'Karyawan' }}
+                </h1>
                 <p class="text-sm text-gray-500 mt-1">
                     Pantau status kehadiran, riwayat absensi, dan informasi cuti Anda hari ini.
                 </p>
@@ -43,13 +52,13 @@
         {{-- Total Kehadiran --}}
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
             <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Kehadiran</p>
-            <h3 class="text-xl font-bold text-gray-800 mt-3">20 Hari</h3>
+            <h3 class="text-xl font-bold text-gray-800 mt-3">{{ $kehadiranBulanIni }} Hari</h3>
         </div>
 
         {{-- Sisa Cuti --}}
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Sisa Cuti</p>
-            <h3 class="text-xl font-bold text-blue-600 mt-3">5 Hari</h3>
+            <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Izin Pending</p>
+            <h3 class="text-xl font-bold text-blue-600 mt-3">{{ $izinPending }}</h3>
         </div>
 
     </div>
@@ -60,11 +69,7 @@
         {{-- Absensi Terbaru --}}
         <div class="xl:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="px-6 py-5 border-b border-gray-100">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="text-lg font-semibold text-gray-800">Absensi Terbaru</h2>
-                    </div>
-                </div>
+                <h2 class="text-lg font-semibold text-gray-800">Absensi Terbaru</h2>
             </div>
 
             <div class="overflow-x-auto">
@@ -79,38 +84,29 @@
                     </thead>
 
                     <tbody class="divide-y divide-gray-100">
+                        {{-- ✅ Pakai data dari controller --}}
+                        @forelse($riwayat as $hadir)
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 font-medium text-gray-800">21 Feb 2026</td>
-                            <td class="px-6 py-4">08:05</td>
-                            <td class="px-6 py-4">17:00</td>
+                            <td class="px-6 py-4 font-medium text-gray-800">
+                                {{ \Carbon\Carbon::parse($hadir->tanggal)->format('d M Y') }}
+                            </td>
+                            <td class="px-6 py-4">{{ $hadir->jam_check_in ?? '-' }}</td>
+                            <td class="px-6 py-4">{{ $hadir->jam_check_out ?? '-' }}</td>
                             <td class="px-6 py-4">
-                                <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-                                    Hadir
-                                </span>
+                                @if($hadir->status === 'hadir')
+                                <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">Hadir</span>
+                                @elseif($hadir->status === 'terlambat')
+                                <span class="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700">Terlambat</span>
+                                @else
+                                <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">{{ $hadir->status }}</span>
+                                @endif
                             </td>
                         </tr>
-
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 font-medium text-gray-800">20 Feb 2026</td>
-                            <td class="px-6 py-4">08:20</td>
-                            <td class="px-6 py-4">17:00</td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700">
-                                    Terlambat
-                                </span>
-                            </td>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-gray-400">Belum ada data absensi</td>
                         </tr>
-
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 font-medium text-gray-800">19 Feb 2026</td>
-                            <td class="px-6 py-4">-</td>
-                            <td class="px-6 py-4">-</td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-                                    Izin
-                                </span>
-                            </td>
-                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -126,17 +122,17 @@
                 <div class="space-y-4 text-sm">
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500">Nama</span>
-                        <span class="font-medium text-gray-800">Yasir</span>
+                        <span class="font-medium text-gray-800">
+                            {{-- ✅ Aman dari null --}}
+                            {{ optional($profil)->nama ?? $user->name ?? '-' }}
+                        </span>
                     </div>
 
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500">Divisi</span>
-                        <span class="font-medium text-gray-800">IT</span>
-                    </div>
-
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-500">Jabatan</span>
-                        <span class="font-medium text-gray-800">Staff</span>
+                        <span class="font-medium text-gray-800">
+                            {{ optional($profil)->divisi->nama ?? '-' }}
+                        </span>
                     </div>
 
                     <div class="flex justify-between items-center">
@@ -147,7 +143,6 @@
                     </div>
                 </div>
             </div>
-
 
         </div>
     </div>

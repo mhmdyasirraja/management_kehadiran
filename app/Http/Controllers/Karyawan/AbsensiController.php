@@ -6,23 +6,24 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kehadiran;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth; // ✅ Tambah ini
 
 class AbsensiController extends Controller
 {
     public function formCheckIn()
     {
-        $karyawan = auth()->user();
+        $karyawan = Auth::guard('karyawan')->user(); // ✅ Fix
 
         $kehadiranHariIni = Kehadiran::where('karyawan_id', $karyawan->id)
-        ->whereDate('tanggal', Carbon::today())
-        ->first();
+            ->whereDate('tanggal', Carbon::today())
+            ->first();
 
-        $sudahCheckIn = $kehadiranHariIni && $kehadiranHariIni->jam_check_in;
+        $sudahCheckIn  = $kehadiranHariIni && $kehadiranHariIni->jam_check_in;
         $sudahCheckOut = $kehadiranHariIni && $kehadiranHariIni->jam_check_out;
 
         $riwayat = Kehadiran::where('karyawan_id', $karyawan->id)
-        ->orderBy('tanggal', 'desc')
-        ->get();
+            ->orderBy('tanggal', 'desc')
+            ->get();
 
         return view('pages.karyawan.absensi', compact(
             'karyawan',
@@ -35,35 +36,36 @@ class AbsensiController extends Controller
 
     public function checkIn(Request $request)
     {
-        $karyawan = auth()->user();
+        $karyawan = Auth::guard('karyawan')->user(); // ✅ Fix
 
-    $sudahCheckIn = Kehadiran::where('karyawan_id', $karyawan->id)
-        ->whereDate('tanggal', Carbon::today())
-        ->exists();
+        $sudahCheckIn = Kehadiran::where('karyawan_id', $karyawan->id)
+            ->whereDate('tanggal', Carbon::today())
+            ->exists();
 
-    if ($sudahCheckIn) {
+        if ($sudahCheckIn) {
+            return redirect()->back()
+                ->with('error', 'Anda sudah melakukan check-in hari ini');
+        }
+
+        Kehadiran::create([
+            'karyawan_id'  => $karyawan->id,
+            'tanggal'      => Carbon::today(),
+            'jam_check_in' => Carbon::now()->toTimeString(),
+            'status'       => 'hadir',
+        ]);
+
         return redirect()->back()
-            ->with('error', 'Anda sudah melakukan check-in hari ini');
+            ->with('success', 'Check-in berhasil pukul ' . Carbon::now()->format('H:i'));
     }
-
-    Kehadiran::create([
-        'karyawan_id' => $karyawan->id,
-        'tanggal' => Carbon::today(),
-        'jam_check_in' => Carbon::now()->toTimeString(),
-        'status' => 'hadir',
-    ]);
-     return redirect()->back()
-        ->with('success', 'Check-in berhasil pukul ' . Carbon::now()->format('H:i'));
-}
 
     public function formCheckOut()
     {
-         return redirect('/karyawan/absensi');
+        return redirect('/karyawan/checkin'); // ✅ Fix URL sesuai route
     }
 
     public function checkOut(Request $request)
     {
-        $karyawan = auth()->user();
+        $karyawan = Auth::guard('karyawan')->user(); // ✅ Fix
 
         $kehadiran = Kehadiran::where('karyawan_id', $karyawan->id)
             ->whereDate('tanggal', Carbon::today())
@@ -88,5 +90,4 @@ class AbsensiController extends Controller
         return redirect()->back()
             ->with('success', 'Check-out berhasil pukul ' . $jamKeluar->format('H:i'));
     }
-    
 }

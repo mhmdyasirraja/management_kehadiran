@@ -7,12 +7,13 @@ use Illuminate\Http\Request;
 use App\Models\Kehadiran;
 use App\Models\Izin;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth; // ✅ Tambah ini
 
 class DashboardController extends Controller
 {
     public function dashboard()
     {
-        $karyawan          = auth()->user();
+        $karyawan          = Auth::guard('karyawan')->user(); // ✅ Fix di sini
         $kehadiranBulanIni = Kehadiran::where('karyawan_id', $karyawan->id)
             ->whereMonth('tanggal', Carbon::now()->month)
             ->whereYear('tanggal', Carbon::now()->year)

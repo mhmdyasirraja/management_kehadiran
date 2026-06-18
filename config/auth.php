@@ -42,7 +42,19 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'users', // pakai tabel users yang sama
+        ],
+
+        'karyawan' => [
+            'driver' => 'session',
+            'provider' => 'users', // pakai tabel users yang sama
+        ],
     ],
+
+
 
     /*
     |--------------------------------------------------------------------------

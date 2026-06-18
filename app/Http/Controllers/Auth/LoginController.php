@@ -10,18 +10,55 @@ class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        if (Auth::attempt([
-            'email' => $request->email,
-            'password' => $request->password,
-        ])) {
-            $request->session()->regenerate();
-            
-            $user = Auth::user();
+        $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $credentials = $request->only('email', 'password');
+        $remember    = $request->boolean('remember');
+
+        // ✅ Coba login sebagai admin
+        if (Auth::guard('admin')->attempt($credentials, $remember)) {
+            $user = Auth::guard('admin')->user();
+
             if ($user->role === 'admin') {
-            return redirect('/admin/dashboard');
+                $request->session()->regenerate();
+                return redirect('/admin/dashboard');
             }
-            return redirect('/karyawan/dashboard');
+
+            // Role bukan admin? logout paksa
+            Auth::guard('admin')->logout();
         }
-        return back()->with('error', 'Email atau password salah');
+
+        // ✅ Coba login sebagai karyawan
+        if (Auth::guard('karyawan')->attempt($credentials, $remember)) {
+            $user = Auth::guard('karyawan')->user();
+
+            if ($user->role === 'karyawan') {
+                $request->session()->regenerate();
+                return redirect('/karyawan/dashboard');
+            }
+
+            // Role bukan karyawan? logout paksa
+            Auth::guard('karyawan')->logout();
+        }
+
+        // ❌ Keduanya gagal
+        return back()
+            ->withErrors(['email' => 'Email atau password salah.'])
+            ->onlyInput('email');
+    }
+
+    public function logout(Request $request)
+    {
+        // ✅ Logout dari kedua guard sekaligus
+        Auth::guard('admin')->logout();
+        Auth::guard('karyawan')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
     }
 }
