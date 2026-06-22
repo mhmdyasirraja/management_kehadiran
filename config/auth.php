@@ -37,6 +37,8 @@ return [
     |
     */
 
+    //guard admin & karyawan
+
     'guards' => [
         'web' => [
             'driver' => 'session',
@@ -45,12 +47,12 @@ return [
 
         'admin' => [
             'driver' => 'session',
-            'provider' => 'users', // pakai tabel users yang sama
+            'provider' => 'users', 
         ],
 
         'karyawan' => [
             'driver' => 'session',
-            'provider' => 'users', // pakai tabel users yang sama
+            'provider' => 'users', 
         ],
     ],
 

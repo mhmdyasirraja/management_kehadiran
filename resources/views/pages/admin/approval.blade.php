@@ -6,8 +6,8 @@
 
     {{-- Header --}}
     @include('components.header_card', [
-        'title' => 'SELAMAT DATANG, ADMIN',
-        'subtitle' => now()->format('l, d F Y')
+    'title' => 'SELAMAT DATANG, ADMIN',
+    'subtitle' => now()->format('l, d F Y')
     ])
 
     <div class="bg-white rounded-xl shadow p-6">
@@ -15,6 +15,13 @@
         <h2 class="text-lg font-semibold text-gray-700 mb-4">
             Perizinan
         </h2>
+
+        {{-- Flash Message --}}
+        @if(session('success'))
+        <div class="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg p-4 mb-4">
+            {{ session('success') }}
+        </div>
+        @endif
 
         {{-- Info --}}
         <div class="bg-blue-50 border border-blue-200 text-blue-700 text-sm rounded-lg p-4 mb-6">
@@ -28,169 +35,154 @@
         {{-- Table --}}
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-gray-600">
-
                 <thead class="border-b text-gray-500 text-left">
                     <tr>
                         <th class="py-3 w-16">Id</th>
                         <th class="py-3">Nama</th>
+                        <th class="py-3">Jenis</th>
                         <th class="py-3">Tanggal</th>
                         <th class="py-3">Status</th>
                         <th class="py-3 text-center w-48">Aksi</th>
                     </tr>
                 </thead>
-
                 <tbody class="divide-y">
-
+                    @forelse($izin as $item)
                     <tr class="hover:bg-gray-50">
-                        <td class="py-3">1</td>
-                        <td class="py-3 font-medium">Yasir</td>
-                        <td class="py-3">20 Feb 2026</td>
+                        <td class="py-3">{{ $item->id }}</td>
+                        <td class="py-3 font-medium">{{ $item->karyawan->nama }}</td>
+                        <td class="py-3 capitalize">{{ $item->jenis_izin }}</td>
                         <td class="py-3">
-                            <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-600">
-                                Pending
-                            </span>
+                            {{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y') }}
+                            @if($item->tanggal_selesai && $item->tanggal_mulai != $item->tanggal_selesai)
+                            – {{ \Carbon\Carbon::parse($item->tanggal_selesai)->format('d M Y') }}
+                            @endif
+                        </td>
+                        <td class="py-3">
+                            @if($item->status === 'pending')
+                            <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-600">Pending</span>
+                            @elseif($item->status === 'approved')
+                            <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-600">Approved</span>
+                            @else
+                            <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-600">Rejected</span>
+                            @endif
                         </td>
                         <td class="py-3 text-center">
+                            {{-- Semua status bisa lihat detail --}}
                             <div class="flex flex-row justify-center items-center gap-2">
-                                <button onclick="openModal('modalApprove1')"
-                                    class="inline-flex px-3 py-1 rounded bg-green-500 text-white text-xs font-semibold hover:bg-green-600 transition">
-                                    Setuju
-                                </button>
-                                <button onclick="openModal('modalReject1')"
-                                    class="inline-flex px-3 py-1 rounded bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition">
-                                    Tolak
+                                <button onclick="openModal('modalDetail{{ $item->id }}')"
+                                    class="inline-flex px-3 py-1 rounded bg-blue-500 text-white text-xs font-semibold hover:bg-blue-600 transition">
+                                    Detail
                                 </button>
                             </div>
                         </td>
                     </tr>
-
-                    <tr class="hover:bg-gray-50">
-                        <td class="py-3">2</td>
-                        <td class="py-3 font-medium">Andi</td>
-                        <td class="py-3">19 Feb 2026</td>
-                        <td class="py-3">
-                            <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-600">
-                                Approved
-                            </span>
-                        </td>
-                        <td class="py-3 text-center text-gray-400">-</td>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="py-6 text-center text-gray-400">Belum ada data perizinan.</td>
                     </tr>
-
-                    <tr class="hover:bg-gray-50">
-                        <td class="py-3">3</td>
-                        <td class="py-3 font-medium">Budi</td>
-                        <td class="py-3">18 Feb 2026</td>
-                        <td class="py-3">
-                            <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-600">
-                                Rejected
-                            </span>
-                        </td>
-                        <td class="py-3 text-center text-gray-400">-</td>
-                    </tr>
-
-                    <tr class="hover:bg-gray-50">
-                        <td class="py-3">4</td>
-                        <td class="py-3 font-medium">Sinta</td>
-                        <td class="py-3">17 Feb 2026</td>
-                        <td class="py-3">
-                            <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-600">
-                                Pending
-                            </span>
-                        </td>
-                        <td class="py-3 text-center">
-                            <div class="flex flex-row justify-center items-center gap-2">
-                                <button onclick="openModal('modalApprove4')"
-                                    class="inline-flex px-3 py-1 rounded bg-green-500 text-white text-xs font-semibold hover:bg-green-600 transition">
-                                    Setujui
-                                </button>
-                                <button onclick="openModal('modalReject4')"
-                                    class="inline-flex px-3 py-1 rounded bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition">
-                                    Tolak
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-
+                    @endforelse
                 </tbody>
-
             </table>
         </div>
 
-        {{-- Modal Setujui 1 --}}
-        <x-modal id="modalApprove1" title="Konfirmasi Setujui Perizinan">
-            <form class="space-y-5">
-                <p>Apakah Anda yakin ingin <span class="font-semibold text-green-600">menyetujui</span> permohonan perizinan ini?</p>
-                <div class="flex flex-row gap-3 pt-2 w-full">
-                    <div class="w-1/2">
-                        <button type="button" onclick="closeModal('modalApprove1')" class="w-full px-4 py-2 text-gray-600 hover:text-black border border-gray-200 rounded">
-                            Batal
-                        </button>
+        {{-- Modals Detail --}}
+        @foreach($izin as $item)
+        <x-modal id="modalDetail{{ $item->id }}" title="Detail Perizinan">
+            <div class="space-y-4">
+
+                {{-- Info Karyawan --}}
+                <div class="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                        <p class="text-gray-400 text-xs mb-1">Nama</p>
+                        <p class="font-medium text-gray-800">{{ $item->karyawan->nama }}</p>
                     </div>
-                    <div class="w-1/2">
-                        <button type="submit" class="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                    <div>
+                        <p class="text-gray-400 text-xs mb-1">Jenis Izin</p>
+                        <p class="font-medium text-gray-800 capitalize">{{ $item->jenis_izin }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-xs mb-1">Tanggal Mulai</p>
+                        <p class="font-medium text-gray-800">{{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d M Y') }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-xs mb-1">Tanggal Selesai</p>
+                        <p class="font-medium text-gray-800">{{ \Carbon\Carbon::parse($item->tanggal_selesai)->format('d M Y') }}</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-gray-400 text-xs mb-1">Keterangan</p>
+                        <p class="font-medium text-gray-800">{{ $item->keterangan }}</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-gray-400 text-xs mb-1">Status</p>
+                        @if($item->status === 'pending')
+                        <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-600">Pending</span>
+                        @elseif($item->status === 'approved')
+                        <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-600">Approved</span>
+                        @else
+                        <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-600">Rejected</span>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Surat Keterangan --}}
+                @if($item->surat_keterangan)
+                <div>
+                    <p class="text-gray-400 text-xs mb-2">Surat Keterangan</p>
+                    @php
+                    $ext = pathinfo($item->surat_keterangan, PATHINFO_EXTENSION);
+                    $url = asset('storage/' . $item->surat_keterangan);
+                    @endphp
+
+                    @if(in_array($ext, ['jpg', 'jpeg', 'png']))
+                    <img src="{{ $url }}" alt="Surat Keterangan"
+                        class="w-full rounded-lg border border-gray-200 max-h-48 object-contain">
+                    @endif
+
+                    <a href="{{ $url }}" target="_blank"
+                        class="mt-2 inline-flex items-center gap-1.5 text-xs text-blue-600 hover:underline">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h4a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                        </svg>
+                        {{ $ext === 'pdf' ? 'Lihat PDF' : 'Lihat Gambar' }}
+                    </a>
+                </div>
+                @else
+                <div class="text-xs text-gray-400 italic">Tidak ada surat keterangan dilampirkan.</div>
+                @endif
+
+                {{-- Tombol Aksi (hanya pending) --}}
+                @if($item->status === 'pending')
+                <div class="border-t border-gray-100 pt-4 flex flex-row gap-3">
+                    <form method="POST" action="{{ route('admin.approval.approve', $item) }}" class="w-1/2">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit"
+                            class="w-full px-4 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700">
                             Setujui
                         </button>
-                    </div>
-                </div>
-            </form>
-        </x-modal>
-
-        {{-- Modal Tolak 1 --}}
-        <x-modal id="modalReject1" title="Konfirmasi Tolak Perizinan">
-            <form class="space-y-5">
-                <p>Apakah Anda yakin ingin <span class="font-semibold text-red-600">menolak</span> permohonan perizinan ini?</p>
-                <div class="flex flex-row gap-3 pt-2 w-full">
-                    <div class="w-1/2">
-                        <button type="button" onclick="closeModal('modalReject1')" class="w-full px-4 py-2 text-gray-600 hover:text-black border border-gray-200 rounded">
-                            Batal
-                        </button>
-                    </div>
-                    <div class="w-1/2">
-                        <button type="submit" class="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+                    </form>
+                    <form method="POST" action="{{ route('admin.approval.reject', $item) }}" class="w-1/2">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit"
+                            class="w-full px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700">
                             Tolak
                         </button>
-                    </div>
+                    </form>
                 </div>
-            </form>
-        </x-modal>
+                @else
+                <div class="border-t border-gray-100 pt-4">
+                    <button type="button" onclick="closeModal('modalDetail{{ $item->id }}')"
+                        class="w-full px-4 py-2 border border-gray-200 text-gray-600 text-sm rounded hover:bg-gray-50">
+                        Tutup
+                    </button>
+                </div>
+                @endif
 
-        {{-- Modal Setujui 4 --}}
-        <x-modal id="modalApprove4" title="Konfirmasi Setujui Perizinan">
-            <form class="space-y-5">
-                <p>Apakah Anda yakin ingin <span class="font-semibold text-green-600">menyetujui</span> permohonan perizinan ini?</p>
-                <div class="flex flex-row gap-3 pt-2 w-full">
-                    <div class="w-1/2">
-                        <button type="button" onclick="closeModal('modalApprove4')" class="w-full px-4 py-2 text-gray-600 hover:text-black border border-gray-200 rounded">
-                            Batal
-                        </button>
-                    </div>
-                    <div class="w-1/2">
-                        <button type="submit" class="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-                            Setujui
-                        </button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </x-modal>
-
-        {{-- Modal Tolak 4 --}}
-        <x-modal id="modalReject4" title="Konfirmasi Tolak Perizinan">
-            <form class="space-y-5">
-                <p>Apakah Anda yakin ingin <span class="font-semibold text-red-600">menolak</span> permohonan perizinan ini?</p>
-                <div class="flex flex-row gap-3 pt-2 w-full">
-                    <div class="w-1/2">
-                        <button type="button" onclick="closeModal('modalReject4')" class="w-full px-4 py-2 text-gray-600 hover:text-black border border-gray-200 rounded">
-                            Batal
-                        </button>
-                    </div>
-                    <div class="w-1/2">
-                        <button type="submit" class="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-                            Tolak
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </x-modal>
+        @endforeach
 
     </div>
 

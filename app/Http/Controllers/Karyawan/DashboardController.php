@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Kehadiran;
 use App\Models\Izin;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth; // ✅ Tambah ini
+use Illuminate\Support\Facades\Auth; 
 
 class DashboardController extends Controller
 {

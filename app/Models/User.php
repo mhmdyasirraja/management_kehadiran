@@ -9,14 +9,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-// ✅ Tambah 'role' di Fillable
 #[Fillable(['name', 'email', 'password', 'role'])]
 #[Hidden(['password', 'remember_token'])]
+
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
-
+    private string $defaultRole = 'karyawan';
     protected function casts(): array
     {
         return [
@@ -25,7 +24,11 @@ class User extends Authenticatable
         ];
     }
 
-    // ✅ Helper method biar lebih clean kalau dipakai di blade/controller
+    public function getDefaultRole(): string
+    {
+        return $this->defaultRole;
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

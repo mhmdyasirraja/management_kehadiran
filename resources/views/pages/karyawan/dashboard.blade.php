@@ -2,7 +2,6 @@
 
 @section('content')
 
-{{-- ✅ Simpan user di variable biar ga berulang --}}
 @php
 $user = Auth::guard('karyawan')->user();
 $profil = $user->karyawan;
@@ -132,6 +131,13 @@ $profil = $user->karyawan;
                         <span class="text-gray-500">Divisi</span>
                         <span class="font-medium text-gray-800">
                             {{ optional($profil)->divisi->nama ?? '-' }}
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-500">Email</span>
+                        <span class="font-medium text-gray-800">
+                            {{ $user->email ?? '-' }}
                         </span>
                     </div>
 

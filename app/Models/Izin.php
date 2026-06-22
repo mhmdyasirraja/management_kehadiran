@@ -11,8 +11,15 @@ class Izin extends Model
     protected $fillable = [
         'karyawan_id',
         'jenis_izin',
-        'tanggal',
+        'tanggal_mulai',
+        'tanggal_selesai',
         'keterangan',
+        'surat_keterangan',
         'status',
     ];
+
+    public function karyawan()
+    {
+        return $this->belongsTo(Karyawan::class, 'karyawan_id');
+    }
 }

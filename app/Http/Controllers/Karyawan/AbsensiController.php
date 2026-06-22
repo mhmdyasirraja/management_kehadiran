@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kehadiran;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth; // ✅ Tambah ini
+use Illuminate\Support\Facades\Auth; 
 
 class AbsensiController extends Controller
 {
     public function formCheckIn()
     {
-        $karyawan = Auth::guard('karyawan')->user(); // ✅ Fix
+        $karyawan = Auth::guard('karyawan')->user(); 
 
         $kehadiranHariIni = Kehadiran::where('karyawan_id', $karyawan->id)
             ->whereDate('tanggal', Carbon::today())
