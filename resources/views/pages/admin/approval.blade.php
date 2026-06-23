@@ -32,12 +32,55 @@
             </ul>
         </div>
 
+        {{-- Filter & Search --}}
+        <div class="flex flex-col md:flex-row md:items-center gap-3 mb-4">
+
+            {{-- Filter Tabs --}}
+            <div class="flex gap-2">
+                <a href="{{ route('admin.approval.index', ['status' => 'pending', 'search' => $search]) }}"
+                    class="px-4 py-1.5 rounded-lg text-sm font-medium transition
+            {{ $filter === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
+                    Pending
+                </a>
+                <a href="{{ route('admin.approval.index', ['status' => 'approved', 'search' => $search]) }}"
+                    class="px-4 py-1.5 rounded-lg text-sm font-medium transition
+            {{ $filter === 'approved' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
+                    Approved
+                </a>
+                <a href="{{ route('admin.approval.index', ['status' => 'rejected', 'search' => $search]) }}"
+                    class="px-4 py-1.5 rounded-lg text-sm font-medium transition
+            {{ $filter === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
+                    Rejected
+                </a>
+            </div>
+
+            {{-- Search Bar --}}
+            <form method="GET" action="{{ route('admin.approval.index') }}" class="flex gap-2 md:ml-auto">
+                <input type="hidden" name="status" value="{{ $filter }}">
+                <input type="text" name="search" value="{{ $search }}"
+                    placeholder="Cari nama karyawan"
+                    class="px-4 py-1.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-56">
+                <button type="submit"
+                    class="px-4 py-1.5 rounded-lg bg-blue-500 text-white text-sm hover:bg-blue-600 transition">
+                    Cari
+                </button>
+                @if($search)
+                <a href="{{ route('admin.approval.index', ['status' => $filter]) }}"
+                    class="px-4 py-1.5 rounded-lg bg-gray-100 text-gray-500 text-sm hover:bg-gray-200 transition">
+                    Reset
+                </a>
+                @endif
+            </form>
+
+        </div>
+
+
         {{-- Table --}}
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-gray-600">
                 <thead class="border-b text-gray-500 text-left">
                     <tr>
-                        <th class="py-3 w-16">Id</th>
+                        <th class="py-3 w-16">No</th>
                         <th class="py-3">Nama</th>
                         <th class="py-3">Jenis</th>
                         <th class="py-3">Tanggal</th>
@@ -48,7 +91,7 @@
                 <tbody class="divide-y">
                     @forelse($izin as $item)
                     <tr class="hover:bg-gray-50">
-                        <td class="py-3">{{ $item->id }}</td>
+                        <td class="py-3">{{ $loop->iteration }}</td>
                         <td class="py-3 font-medium">{{ $item->karyawan->nama }}</td>
                         <td class="py-3 capitalize">{{ $item->jenis_izin }}</td>
                         <td class="py-3">

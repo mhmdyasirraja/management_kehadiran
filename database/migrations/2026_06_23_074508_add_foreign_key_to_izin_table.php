@@ -6,21 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::table('izin', function (Blueprint $table) {
-            if (!Schema::hasColumn('izin', 'surat_keterangan')) {
-                $table->string('surat_keterangan')->nullable()->after('keterangan');
-            }
+            $table->foreign('karyawan_id')
+                ->references('id')
+                ->on('karyawans')
+                ->onDelete('restrict');
         });
     }
 
     public function down(): void
     {
         Schema::table('izin', function (Blueprint $table) {
-            if (Schema::hasColumn('izin', 'surat_keterangan')) {
-                $table->dropColumn('surat_keterangan');
-            }
+            $table->dropForeign(['karyawan_id']);
         });
     }
 };
