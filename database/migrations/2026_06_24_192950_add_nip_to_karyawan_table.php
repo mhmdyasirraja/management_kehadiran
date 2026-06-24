@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('divisi', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama');
-            $table->integer('jumlah')->default(0);
-            $table->text('deskripsi')->nullable();
-            $table->timestamps();
+        Schema::table('karyawan', function (Blueprint $table) {
+            //
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('divisi');
+        Schema::table('karyawan', function (Blueprint $table) {
+            //
+        });
     }
 };

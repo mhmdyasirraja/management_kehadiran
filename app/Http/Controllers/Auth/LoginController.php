@@ -18,7 +18,6 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         $remember    = $request->boolean('remember');
 
-        // ✅ Coba login sebagai admin
         if (Auth::guard('admin')->attempt($credentials, $remember)) {
             $user = Auth::guard('admin')->user();
 
@@ -27,11 +26,9 @@ class LoginController extends Controller
                 return redirect('/admin/dashboard');
             }
 
-            // Role bukan admin? logout paksa
             Auth::guard('admin')->logout();
         }
 
-        // ✅ Coba login sebagai karyawan
         if (Auth::guard('karyawan')->attempt($credentials, $remember)) {
             $user = Auth::guard('karyawan')->user();
 
@@ -40,11 +37,9 @@ class LoginController extends Controller
                 return redirect('/karyawan/dashboard');
             }
 
-            // Role bukan karyawan? logout paksa
             Auth::guard('karyawan')->logout();
         }
 
-        // ❌ Keduanya gagal
         return back()
             ->withErrors(['email' => 'Email atau password salah.'])
             ->onlyInput('email');
@@ -52,7 +47,6 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        // ✅ Logout dari kedua guard sekaligus
         Auth::guard('admin')->logout();
         Auth::guard('karyawan')->logout();
 

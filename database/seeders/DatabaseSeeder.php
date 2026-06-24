@@ -3,23 +3,29 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Divisi; 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // 1. Membuat data divisi contoh menggunakan nama kolom 'nama'
+        Divisi::create(['nama' => 'IT Support']);
+        Divisi::create(['nama' => 'Human Resource (HR)']);
+        Divisi::create(['nama' => 'Finance']);
+        Divisi::create(['nama' => 'Marketing']);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // 2. Membuat akun admin
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('admin123'), 
+            'role' => 'admin',
         ]);
     }
 }

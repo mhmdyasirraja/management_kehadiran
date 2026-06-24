@@ -72,11 +72,6 @@
             <form action="{{ route('karyawan.store') }}" method="POST" class="space-y-5">
                 @csrf
                 <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">NIP</label>
-                    <input type="text" name="nip" placeholder="Contoh: KRY001"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
-                </div>
-                <div>
                     <label class="block text-sm font-medium text-gray-600 mb-1">Nama Karyawan</label>
                     <input type="text" name="nama" placeholder="Contoh: Budi Santoso"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">

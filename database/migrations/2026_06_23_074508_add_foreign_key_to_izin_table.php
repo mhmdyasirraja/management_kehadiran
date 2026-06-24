@@ -9,9 +9,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('izin', function (Blueprint $table) {
+            // 1. Paksa tipe data kolom 'karyawan_id' agar sama-sama string(6) seperti id karyawan
+            $table->string('karyawan_id', 6)->change();
+            
+            // 2. Baru pasang relasi foreign key-nya
             $table->foreign('karyawan_id')
                 ->references('id')
-                ->on('karyawans')
+                ->on('karyawan')
                 ->onDelete('restrict');
         });
     }

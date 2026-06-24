@@ -14,37 +14,38 @@ class KaryawanController extends Controller
     public function index()
     {
         $karyawan = Karyawan::with('divisi')->get();
-        $divisi   = Divisi::all();
+        $divisi = Divisi::all();
 
         return view('pages.admin.karyawan', [
             'karyawan' => $karyawan,
-            'divisi'   => $divisi,
-            'role'     => 'admin',
+            'divisi' => $divisi,
+            'role' => 'admin',
         ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nip'       => 'required|unique:karyawans,nip',
-            'nama'      => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'divisi_id' => 'required|exists:divisi,id',
-            'email'     => 'required|email|unique:users,email',
-            'password'  => 'required|min:6',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
         ]);
 
         $user = User::create([
-            'nama'     => $request->nama,
-            'email'    => $request->email,
+            'name' => $request->nama, 
+            'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role'     => 'karyawan',
+            'role' => 'karyawan',
         ]);
 
         Karyawan::create([
-            'user_id'   => $user->id,
-            'nip'       => $request->nip,
-            'nama'      => $request->nama,
+            'id' => rand(100000, 999999),
+            'nama' => $request->nama,
+            'email' => $request->email,
             'divisi_id' => $request->divisi_id,
+            'status' => 'aktif',
+            'nip' => $this->generateNip(), 
         ]);
 
         return redirect()->back()->with('success', 'Karyawan berhasil ditambahkan.');
@@ -53,21 +54,18 @@ class KaryawanController extends Controller
     public function update(Request $request, Karyawan $karyawan)
     {
         $request->validate([
-            'nip'       => 'required|unique:karyawans,nip,' . $karyawan->id,
-            'nama'      => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'divisi_id' => 'required|exists:divisi,id',
         ]);
 
         $karyawan->update([
-            'nip'       => $request->nip,
-            'nama'      => $request->nama,
+            'nama' => $request->nama,
             'divisi_id' => $request->divisi_id,
         ]);
 
-        // Update nama di tabel users 
         if ($karyawan->user) {
             $karyawan->user->update([
-                'nama' => $request->nama,
+                'name' => $request->nama,
             ]);
         }
 
@@ -89,7 +87,6 @@ class KaryawanController extends Controller
 
     public function destroy(Karyawan $karyawan)
     {
-        // Hapus user 
         if ($karyawan->user) {
             $karyawan->user->delete();
         }
@@ -97,5 +94,14 @@ class KaryawanController extends Controller
         $karyawan->delete();
 
         return redirect()->back()->with('success', 'Karyawan berhasil dihapus.');
+    }
+
+    private function generateNip()
+    {
+        do {
+            $nip = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        } while (Karyawan::where('nip', $nip)->exists());
+
+        return $nip;
     }
 }
