@@ -11,7 +11,8 @@ class DivisiController extends Controller
     // Ambil semua data dari DB
     public function index()
     {
-        $divisi = Divisi::oldest()->get();
+        // Tambahkan jumlah karyawan per divisi secara otomatis
+        $divisi = Divisi::withCount('karyawan')->oldest()->get();
 
         return view('pages.admin.divisi', [
             'divisi' => $divisi,
@@ -23,7 +24,7 @@ class DivisiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama'      => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
         ]);
 
@@ -36,7 +37,7 @@ class DivisiController extends Controller
     public function update(Request $request, Divisi $divisi)
     {
         $request->validate([
-            'nama'      => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
         ]);
 
