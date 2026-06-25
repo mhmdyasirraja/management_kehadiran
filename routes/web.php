@@ -24,7 +24,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.process');
 // logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-//  middleware admin
+// middleware admin
 Route::prefix('admin')
     ->middleware('auth:admin')
     ->group(function () {
@@ -33,8 +33,13 @@ Route::prefix('admin')
             return view('pages.admin.dashboard', ['role' => 'admin']);
         });
 
+        // Divisi Resource
         Route::resource('/divisi', DivisiController::class);
-        Route::resource('/karyawan', KaryawanController::class);
+
+        Route::get('/karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
+        Route::post('/karyawan', [KaryawanController::class, 'store'])->name('karyawan.store');
+        Route::put('/karyawan/{karyawan}', [KaryawanController::class, 'update'])->name('karyawan.update');
+        Route::delete('/karyawan/{karyawan}', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
 
         Route::patch('/karyawan/{id}/status', [KaryawanController::class, 'updateStatus'])
             ->name('karyawan.status');
@@ -56,12 +61,14 @@ Route::prefix('karyawan')
 
         Route::get('/dashboard', [DashboardController::class, 'dashboard']);
 
+        // Absensi
         Route::get('/checkin', [AbsensiController::class, 'formCheckIn']);
         Route::post('/checkin', [AbsensiController::class, 'checkIn']);
 
         Route::get('/checkout', [AbsensiController::class, 'formCheckOut']);
         Route::post('/checkout', [AbsensiController::class, 'checkOut']);
 
+        // Izin Karyawan
         Route::get('/izin', [IzinController::class, 'index']);
         Route::post('/izin', [IzinController::class, 'store']);
 

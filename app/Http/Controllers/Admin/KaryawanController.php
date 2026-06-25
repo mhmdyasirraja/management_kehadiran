@@ -33,7 +33,7 @@ class KaryawanController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $request->nama, 
+            'name' => $request->nama,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'karyawan',
@@ -45,7 +45,7 @@ class KaryawanController extends Controller
             'email' => $request->email,
             'divisi_id' => $request->divisi_id,
             'status' => 'aktif',
-            'nip' => $this->generateNip(), 
+            'nip' => $this->generateNip(),
         ]);
 
         return redirect()->back()->with('success', 'Karyawan berhasil ditambahkan.');
@@ -53,23 +53,55 @@ class KaryawanController extends Controller
 
     public function update(Request $request, Karyawan $karyawan)
     {
+        $emailLama = $karyawan->email;
+
+        $user = \App\Models\User::where('email', $emailLama)->first();
+        $userId = $user ? $user->id : null;
+
         $request->validate([
             'nama' => 'required|string|max:255',
             'divisi_id' => 'required|exists:divisi,id',
+            'email' => 'required|email|unique:users,email,' . ($userId ?? 'NULL') . '|unique:karyawan,email,' . $karyawan->getKey(),
+            'password' => 'nullable|min:6',
         ]);
 
-        $karyawan->update([
+        Karyawan::whereKey($karyawan->getKey())->update([
             'nama' => $request->nama,
+            'email' => $request->email,
             'divisi_id' => $request->divisi_id,
         ]);
 
-        if ($karyawan->user) {
-            $karyawan->user->update([
+
+        if ($user) {
+            $userData = [
                 'name' => $request->nama,
+                'email' => $request->email, 
+            ];
+
+            if ($request->filled('password')) {
+                $userData['password'] = \Illuminate\Support\Facades\Hash::make($request->password);
+            }
+
+            $user->update($userData);
+        } else {
+            $passwordDefault = $request->filled('password') ? $request->password : 'karyawan123';
+
+            $user = \App\Models\User::create([
+                'name' => $request->nama,
+                'email' => $request->email,
+                'password' => \Illuminate\Support\Facades\Hash::make($passwordDefault),
+                'role' => 'karyawan',
             ]);
         }
 
-        return redirect()->back()->with('success', 'Karyawan berhasil diupdate.');
+        \App\Models\Karyawan::where($karyawan->getKeyName(), $karyawan->getKey())
+            ->update([
+                'nama' => $request->nama,
+                'email' => $request->email, 
+                'divisi_id' => $request->divisi_id,
+            ]);
+
+        return redirect()->back()->with('success', 'Karyawan dan password berhasil diupdate.');
     }
 
     public function updateStatus($id)
@@ -87,9 +119,7 @@ class KaryawanController extends Controller
 
     public function destroy(Karyawan $karyawan)
     {
-        if ($karyawan->user) {
-            $karyawan->user->delete();
-        }
+        \App\Models\User::where('email', $karyawan->email)->delete();
 
         $karyawan->delete();
 

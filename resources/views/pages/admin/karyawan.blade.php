@@ -8,7 +8,6 @@
     'subtitle' => now()->format('l, d F Y')
     ])
 
-    {{-- Flash message --}}
     @if(session('success'))
     <div class="bg-green-100 text-green-700 px-4 py-3 rounded">
         {{ session('success') }}
@@ -43,7 +42,7 @@
                     <td class="py-3">{{ $item->nip }}</td>
                     <td class="py-3 font-medium">{{ $item->nama }}</td>
                     <td class="py-3">{{ $item->divisi->nama ?? '-' }}</td>
-                    <td class="py-3">{{ $item->user->email ?? '-' }}</td>
+                    <td class="py-3">{{ $item->email ?? '-' }}</td>
                     <td class="py-3">
                         <div class="flex justify-center gap-2">
                             <button onclick="openModal('modalEdit{{ $item->id }}')"
@@ -67,18 +66,18 @@
             </tbody>
         </table>
 
-        {{-- Modal Tambah --}}
+            <!-- tambah -->
         <x-modal id="modalKaryawan" title="Tambah Karyawan">
             <form action="{{ route('karyawan.store') }}" method="POST" class="space-y-5">
                 @csrf
                 <div>
                     <label class="block text-sm font-medium text-gray-600 mb-1">Nama Karyawan</label>
-                    <input type="text" name="nama" placeholder="Contoh: Budi Santoso"
+                    <input type="text" name="nama" placeholder="Contoh: Budi Santoso" required
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-600 mb-1">Divisi</label>
-                    <select name="divisi_id"
+                    <select name="divisi_id" required
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
                         <option value="">Pilih Divisi</option>
                         @foreach($divisi as $d)
@@ -88,12 +87,12 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
-                    <input type="email" name="email" placeholder="Contoh: budi@email.com"
+                    <input type="email" name="email" placeholder="Contoh: budi@email.com" required
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-600 mb-1">Password</label>
-                    <input type="password" name="password" placeholder="Minimal 6 karakter"
+                    <input type="password" name="password" placeholder="Minimal 6 karakter" required
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
                 </div>
                 <div class="flex justify-end gap-2 pt-2">
@@ -105,69 +104,72 @@
             </form>
         </x-modal>
 
-        {{-- Modal Edit & Hapus --}}
         @foreach($karyawan as $item)
-        <x-modal id="modalEdit{{ $item->id }}" title="Edit Karyawan">
-            <form action="{{ route('karyawan.update', $item->id) }}" method="POST" class="space-y-5">
-                @csrf
-                @method('PUT')
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">NIP</label>
-                    <input type="text" name="nip" value="{{ $item->nip }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Nama Karyawan</label>
-                    <input type="text" name="nama" value="{{ $item->nama }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Divisi</label>
-                    <select name="divisi_id"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                        <option value="">Pilih Divisi</option>
-                        @foreach($divisi as $d)
-                        <option value="{{ $d->id }}" {{ $item->divisi_id == $d->id ? 'selected' : '' }}>
-                            {{ $d->nama }}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
-                    <input type="email" name="email" value="{{ $item->user->email ?? '' }}"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-600 mb-1">Password Baru <span class="text-gray-400 font-normal">(kosongkan jika tidak diubah)</span></label>
-                    <input type="password" name="password" placeholder="Minimal 6 karakter"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                </div>
-                <div class="flex gap-3 pt-2">
-                    <button type="button" onclick="closeModal('modalEdit{{ $item->id }}')"
-                        class="px-4 py-2 text-gray-600 border border-gray-200 rounded w-1/2">Batal</button>
-                    <button type="submit"
-                        class="px-4 py-2 bg-yellow-500 text-white rounded w-1/2 hover:bg-yellow-600">Simpan</button>
-                </div>
-            </form>
-        </x-modal>
+            
+            <!-- edit -->
+            <x-modal id="modalEdit{{ $item->id }}" title="Edit Karyawan">
+                <form action="{{ route('karyawan.update', $item->id) }}" method="POST" class="space-y-5" autocomplete="off">
+                    @csrf
+                    @method('PUT')
 
-        <x-modal id="modalHapus{{ $item->id }}" title="Hapus Karyawan">
-            <form action="{{ route('karyawan.destroy', $item->id) }}" method="POST" class="space-y-5">
-                @csrf
-                @method('DELETE')
-                <p>Apakah Anda yakin ingin menghapus karyawan
-                    <span class="font-semibold">{{ $item->nama }}</span>?
-                </p>
-                <div class="flex gap-3 pt-2">
-                    <button type="button" onclick="closeModal('modalHapus{{ $item->id }}')"
-                        class="px-4 py-2 text-gray-600 border border-gray-200 rounded w-1/2">Batal</button>
-                    <button type="submit"
-                        class="px-4 py-2 bg-red-600 text-white rounded w-1/2 hover:bg-red-700">Hapus</button>
-                </div>
-            </form>
-        </x-modal>
-        @endforeach
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Nama Karyawan</label>
+                        <input type="text" name="nama" value="{{ $item->nama }}" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Divisi</label>
+                        <select name="divisi_id" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                            <option value="">Pilih Divisi</option>
+                            @foreach($divisi as $d)
+                            <option value="{{ $d->id }}" {{ $item->divisi_id == $d->id ? 'selected' : '' }}>
+                                {{ $d->nama }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
+                        <input type="email" name="email" value="{{ $item->email }}" autocomplete="new-email" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-600 mb-1">Password Baru <span class="text-gray-400 font-normal">(kosongkan jika tidak diubah)</span></label>
+                        <input type="password" name="password" placeholder="Minimal 6 karakter" autocomplete="new-password"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                    </div>
+
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" onclick="closeModal('modalEdit{{ $item->id }}')"
+                            class="px-4 py-2 text-gray-600 border border-gray-200 rounded w-1/2">Batal</button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-yellow-500 text-white rounded w-1/2 hover:bg-yellow-600">Simpan</button>
+                    </div>
+                </form>
+            </x-modal>
+
+            <!-- hapus -->
+            <x-modal id="modalHapus{{ $item->id }}" title="Hapus Karyawan">
+                <form action="{{ route('karyawan.destroy', $item->id) }}" method="POST" class="space-y-5">
+                    @csrf
+                    @method('DELETE')
+                    <p class="text-gray-600">Apakah Anda yakin ingin menghapus karyawan
+                        <span class="font-semibold">{{ $item->nama }}</span>?
+                    </p>
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" onclick="closeModal('modalHapus{{ $item->id }}')"
+                            class="px-4 py-2 text-gray-600 border border-gray-200 rounded w-1/2">Batal</button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-red-600 text-white rounded w-1/2 hover:bg-red-700">Hapus</button>
+                    </div>
+                </form>
+            </x-modal>
+
+        @endforeach 
 
     </div>
 </div>
