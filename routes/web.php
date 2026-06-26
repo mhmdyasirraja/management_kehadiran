@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\DivisiController;
 use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Karyawan\DashboardController;
@@ -29,9 +30,7 @@ Route::prefix('admin')
     ->middleware('auth:admin')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('pages.admin.dashboard', ['role' => 'admin']);
-        });
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
         // Divisi Resource
         Route::resource('/divisi', DivisiController::class);

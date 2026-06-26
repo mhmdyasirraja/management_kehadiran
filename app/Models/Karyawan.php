@@ -9,7 +9,7 @@ class Karyawan extends Model
 {
     use HasFactory;
 
-    protected $table = 'karyawans'; 
+    protected $table = 'karyawans';
 
     protected $fillable = [
         'user_id',
@@ -18,6 +18,11 @@ class Karyawan extends Model
         'status',
         'nip',
     ];
+
+    public function kehadiran()
+    {
+        return $this->hasMany(Kehadiran::class, 'karyawan_id');
+    }
 
     public function divisi()
     {
