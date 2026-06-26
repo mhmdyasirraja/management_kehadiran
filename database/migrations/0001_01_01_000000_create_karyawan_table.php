@@ -11,24 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('karyawan', function (Blueprint $table) {
-            $table->string('id', 6)->primary(); 
+        Schema::create('karyawans', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('divisi_id')->constrained('divisi')->onDelete('restrict');
             $table->string('nama');
-            $table->string('email')->unique();
-            $table->foreignId('divisi_id')->nullable(); 
-            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
-
             $table->string('nip')->unique();
-            
+            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('karyawan');
+        Schema::dropIfExists('karyawans');
     }
 };

@@ -42,7 +42,7 @@
                     <td class="py-3">{{ $item->nip }}</td>
                     <td class="py-3 font-medium">{{ $item->nama }}</td>
                     <td class="py-3">{{ $item->divisi->nama ?? '-' }}</td>
-                    <td class="py-3">{{ $item->email ?? '-' }}</td>
+                    <td class="py-3">{{ $item->user->email ?? '-' }}</td> 
                     <td class="py-3">
                         <div class="flex justify-center gap-2">
                             <button onclick="openModal('modalEdit{{ $item->id }}')"
@@ -133,7 +133,7 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
-                        <input type="email" name="email" value="{{ $item->email }}" autocomplete="new-email" required
+                        <input type="email" name="email" value="{{ $item->user->email ?? '' }}" autocomplete="new-email" required
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400">
                     </div>
 

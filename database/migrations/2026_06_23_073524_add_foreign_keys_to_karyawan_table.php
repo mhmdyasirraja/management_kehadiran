@@ -8,18 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('karyawan', function (Blueprint $table) {
-            $table->foreign('divisi_id')
-                ->references('id')
-                ->on('divisi')
-                ->onDelete('restrict');
-        });
+    
     }
 
     public function down(): void
     {
-        Schema::table('karyawan', function (Blueprint $table) {
-            $table->dropForeign(['divisi_id']);
-        });
+        
     }
 };

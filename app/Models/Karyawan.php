@@ -9,15 +9,14 @@ class Karyawan extends Model
 {
     use HasFactory;
 
-    protected $table = 'karyawan';
+    protected $table = 'karyawans'; 
 
     protected $fillable = [
-        'id',
+        'user_id',
         'nama',
-        'email',
         'divisi_id',
         'status',
-        'nip'
+        'nip',
     ];
 
     public function divisi()
@@ -27,6 +26,6 @@ class Karyawan extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'email', 'email');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
