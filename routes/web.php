@@ -33,15 +33,21 @@ Route::prefix('admin')
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
         // Divisi Resource
-        Route::resource('/divisi', DivisiController::class);
+        Route::resource('/divisi', DivisiController::class)->only([
+            'index',
+            'store',
+            'update',
+            'destroy'
+        ]);
 
-        Route::get('/karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
-        Route::post('/karyawan', [KaryawanController::class, 'store'])->name('karyawan.store');
-        Route::put('/karyawan/{karyawan}', [KaryawanController::class, 'update'])->name('karyawan.update');
-        Route::delete('/karyawan/{karyawan}', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
-
-        Route::patch('/karyawan/{id}/status', [KaryawanController::class, 'updateStatus'])
-            ->name('karyawan.status');
+        Route::resource('/karyawan', KaryawanController::class)->only([
+            'index',
+            'store',
+            'update',
+            'destroy'
+        ]);
+        Route::post('/karyawan/{id}/status', [KaryawanController::class, 'updateStatus'])
+            ->name('karyawan.updateStatus');
 
         Route::get('/approval', [ApprovalController::class, 'index'])
             ->name('admin.approval.index');

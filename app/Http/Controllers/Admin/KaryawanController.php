@@ -2,19 +2,33 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Support\Facades\DB; // tambah ini
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Karyawan;
 use App\Models\Divisi;
+use App\Models\Izin;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class KaryawanController extends Controller
 {
-    public function index()
+    public function index(Request $request)  // ← tambah Request $request
     {
-        $karyawan = Karyawan::with(['divisi', 'user'])->get();
+        $query = Karyawan::with(['divisi', 'user']);
+
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->search . '%')
+                    ->orWhere('nip', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        if ($request->filled('divisi_id')) {
+            $query->where('divisi_id', $request->divisi_id);
+        }
+
+        $karyawan = $query->get();
         $divisi   = Divisi::all();
 
         return view('pages.admin.karyawan', [
@@ -33,14 +47,16 @@ class KaryawanController extends Controller
             'password'  => 'required|min:6',
         ]);
 
+        //buat user akun dlu
         DB::transaction(function () use ($request) {
             $user = User::create([
-                'name'     => $request->nama, 
+                'name'     => $request->nama,
                 'email'    => $request->email,
                 'password' => Hash::make($request->password),
                 'role'     => 'karyawan',
             ]);
 
+            //buat data karyawan
             Karyawan::create([
                 'user_id'   => $user->id,
                 'nama'      => $request->nama,
@@ -85,12 +101,12 @@ class KaryawanController extends Controller
     public function destroy(Karyawan $karyawan)
     {
         DB::transaction(function () use ($karyawan) {
-            $user = $karyawan->user; 
-
-            $karyawan->delete(); 
-
+            $karyawan->izin()->delete();
+            $karyawan->kehadiran()->delete();
+            $user = $karyawan->user;
+            $karyawan->delete();
             if ($user) {
-                $user->delete(); 
+                $user->delete();
             }
         });
 

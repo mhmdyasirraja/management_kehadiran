@@ -9,7 +9,7 @@ class Divisi extends Model
     // FIX: Beritahu Laravel kalau nama tabel di database adalah 'divisi'
     protected $table = 'divisi';
 
-    protected $fillable = ['nama']; 
+    protected $fillable = ['nama', 'deskripsi'];
 
     /**
      * Relasi ke tabel Karyawan

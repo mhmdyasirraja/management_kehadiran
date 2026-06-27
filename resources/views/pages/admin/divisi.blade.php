@@ -40,10 +40,10 @@
                             <td class="py-3">{{ $item->created_at->format('d M Y') }}</td>
                             <td class="py-3">
                                 <div class="flex justify-center gap-2">
-                                    <button onclick="openModal('modalEditDivisi{{ $index }}')" ...
+                                    <button onclick="openModal('modalEditDivisi{{ $index }}')" 
                                         class="px-3 py-1 rounded bg-yellow-400 text-white text-xs font-semibold hover:bg-yellow-500 transition">Edit
                                     </button>
-                                    <button onclick="openModal('modalDeleteDivisi{{ $index }}')" ...
+                                    <button onclick="openModal('modalDeleteDivisi{{ $index }}')" 
                                         class="px-3 py-1 rounded bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition">
                                         Hapus
                                     </button>
