@@ -64,6 +64,10 @@ Route::prefix('karyawan')
     ->middleware('auth:karyawan')
     ->group(function () {
 
+        Route::get('/absensi', [AbsensiController::class, 'formCheckIn']);
+
+        Route::get('/riwayat', [AbsensiController::class, 'riwayat']);
+
         Route::get('/dashboard', [DashboardController::class, 'dashboard']);
 
         // Absensi
@@ -80,3 +84,4 @@ Route::prefix('karyawan')
         Route::delete('/izin/{izin}', [IzinController::class, 'destroy'])
             ->name('karyawan.izin.destroy');
     });
+

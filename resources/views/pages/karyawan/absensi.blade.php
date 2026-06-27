@@ -105,7 +105,7 @@
 
                 <tbody class="divide-y">
 
-                   @forelse($riwayat as $item)
+            @forelse($riwayat as $item)
 <tr class="hover:bg-gray-50">
 
     <td class="py-3">
@@ -113,11 +113,11 @@
     </td>
 
     <td class="py-3">
-        {{ $item->jam_check_in ?? '-' }}
+        {{ $item->jam_masuk ?? '-' }}
     </td>
 
     <td class="py-3">
-        {{ $item->jam_check_out ?? '-' }}
+        {{ $item->jam_keluar ?? '-' }}
     </td>
 
     <td class="py-3">
@@ -150,9 +150,9 @@
 </tr>
 
 @endforelse
- </tbody>
+</tbody>
 </table>
- </div>
+</div>
 </div>
 </div>
 

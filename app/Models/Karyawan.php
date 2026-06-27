@@ -25,6 +25,12 @@ class Karyawan extends Model
         return $this->hasMany(Kehadiran::class, 'karyawan_id');
     }
 
+    public function kehadiranTerbaru()
+    {
+        return $this->hasMany(Kehadiran::class, 'karyawan_id')->orderBy('tanggal', 'desc');
+    }
+
+
     public function divisi()
     {
         return $this->belongsTo(Divisi::class, 'divisi_id');

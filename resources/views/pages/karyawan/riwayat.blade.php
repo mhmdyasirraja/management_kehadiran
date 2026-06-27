@@ -65,58 +65,32 @@
 
             <tbody class="divide-y">
 
+                @forelse($riwayat as $item)
                 <tr class="hover:bg-gray-50">
-                    <td class="py-3">21 April 2026</td>
-                    <td class="py-3">08:05</td>
-                    <td class="py-3">17:00</td>
                     <td class="py-3">
-                        <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">
-                            Hadir
-                        </span>
+                        {{ \Carbon\Carbon::parse($item->tanggal)->format('d F Y') }}
+                    </td>
+                    <td class="py-3">{{ $item->jam_masuk ?? '-' }}</td>
+                    <td class="py-3">{{ $item->jam_keluar ?? '-' }}</td>
+                    <td class="py-3">
+                        @if($item->status === 'hadir')
+                            <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">Hadir</span>
+                        @elseif($item->status === 'terlambat')
+                            <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs">Terlambat</span>
+                        @elseif($item->status === 'izin')
+                            <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs">Izin</span>
+                        @else
+                            <span class="bg-red-100 text-red-600 px-2 py-1 rounded text-xs">Tidak Hadir</span>
+                        @endif
                     </td>
                 </tr>
-
-                <tr class="hover:bg-gray-50">
-                    <td class="py-3">20 April 2026</td>
-                    <td class="py-3">08:25</td>
-                    <td class="py-3">17:00</td>
-                    <td class="py-3">
-                        <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs">
-                            Terlambat
-                        </span>
-                    </td>
-                </tr>
-
-                <tr class="hover:bg-gray-50">
-                    <td class="py-3">19 April 2026</td>
-                    <td class="py-3">-</td>
-                    <td class="py-3">-</td>
-                    <td class="py-3">
-                        <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs">
-                            Izin
-                        </span>
-                    </td>
-                </tr>
-
-                <tr class="hover:bg-gray-50">
-                    <td class="py-3">18 April 2026</td>
-                    <td class="py-3">-</td>
-                    <td class="py-3">-</td>
-                    <td class="py-3">
-                        <span class="bg-red-100 text-red-600 px-2 py-1 rounded text-xs">
-                            Tidak Hadir
-                        </span>
-                    </td>
-                </tr>
-
-                {{-- Empty State --}}
-                {{--
+                @empty
                 <tr>
-                    <td colspan="4" class="text-center py-10 text-gray-400">
-                        Tidak ada data
+                    <td colspan="4" class="py-4 text-center text-gray-500">
+                        Belum ada riwayat absensi
                     </td>
                 </tr>
-                --}}
+                @endforelse
 
             </tbody>
 

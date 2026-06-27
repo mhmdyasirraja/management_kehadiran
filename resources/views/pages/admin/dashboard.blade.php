@@ -117,18 +117,17 @@
                             {{ $absen->jam_keluar ? \Carbon\Carbon::parse($absen->jam_keluar)->format('H:i') : '—' }}
                         </td>
                         <td class="py-3 text-center">
-                            @if ($absen->status === 'Hadir')
-                            <span class="px-2.5 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium">
-                                Hadir
-                            </span>
-                            @elseif ($absen->status === 'Izin')
-                            <span class="px-2.5 py-1 text-xs rounded-full bg-yellow-100 text-yellow-600 font-medium">
-                                Izin
-                            </span>
+                            @php
+                                $st = $absen->status;
+                            @endphp
+                            @if ($st === 'Hadir' || $st === 'hadir')
+                                <span class="px-2.5 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium">Hadir</span>
+                            @elseif ($st === 'Izin' || $st === 'izin')
+                                <span class="px-2.5 py-1 text-xs rounded-full bg-yellow-100 text-yellow-600 font-medium">Izin</span>
+                            @elseif ($st === 'Terlambat' || $st === 'terlambat')
+                                <span class="px-2.5 py-1 text-xs rounded-full bg-yellow-100 text-yellow-600 font-medium">Terlambat</span>
                             @else
-                            <span class="px-2.5 py-1 text-xs rounded-full bg-red-100 text-red-600 font-medium">
-                                Tidak Hadir
-                            </span>
+                                <span class="px-2.5 py-1 text-xs rounded-full bg-red-100 text-red-600 font-medium">Tidak Hadir</span>
                             @endif
                         </td>
                     </tr>
