@@ -24,7 +24,7 @@ class ApprovalController extends Controller
         return view('pages.admin.approval', compact('izin', 'filter', 'search'));
     }
 
-    public function approve(Izin $izin)
+    public function approved(Izin $izin)
     {
         $izin->update([
             'status' => 'approved',
@@ -39,7 +39,7 @@ class ApprovalController extends Controller
     {
         $izin->update([
             'status' => 'rejected',
-            'approved_by' => auth('admin')->user()->id,
+            'approved_by' => auth('admin')->id(),
         ]);
 
         return redirect()->route('admin.approval.index')

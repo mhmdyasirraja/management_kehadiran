@@ -16,6 +16,7 @@ class Izin extends Model
         'keterangan',
         'surat_keterangan',
         'status',
+        'approved_by',
     ];
 
     public function karyawan()

@@ -9,14 +9,23 @@ use Illuminate\Http\Request;
 class DivisiController extends Controller
 {
     // Ambil semua data dari DB
-    public function index()
+    public function index(Request $request)
     {
-        // Tambahkan jumlah karyawan per divisi secara otomatis
-        $divisi = Divisi::withCount('karyawan')->oldest()->get();
+        // filter cari divisi
+        $search = $request->query('search');
+
+        // hitung jumlah karyawan per divisi secara otomatis
+        $divisi = Divisi::withCount('karyawan')
+            ->when($search, function ($query, $search) {
+                $query->where('nama', 'like', '%' . $search .'%');
+            })
+            ->oldest()
+            ->get();
 
         return view('pages.admin.divisi', [
             'divisi' => $divisi,
-            'role' => 'admin'
+            'role' => 'admin',
+            'search' => $search,
         ]);
     }
 

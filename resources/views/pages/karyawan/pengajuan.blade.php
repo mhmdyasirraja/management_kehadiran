@@ -45,7 +45,6 @@
         <ul class="list-disc ml-5 space-y-1 text-sm">
             <li><strong>Cuti:</strong> diajukan minimal 1 minggu sebelum hari H dan paling lambat 1 hari sebelum hari H.</li>
             <li><strong>Sakit:</strong> surat sakit diajukan maksimal 3 hari setelah hari H.</li>
-            <li><strong>Izin:</strong> lampirkan keterangan yang jelas agar proses persetujuan lebih cepat.</li>
         </ul>
     </div>
 
@@ -124,6 +123,13 @@
     {{-- Modal Ajukan Izin --}}
     <x-modal id="izinModal" title="Ajukan Perizinan">
         <form action="/karyawan/izin" method="POST" class="space-y-5" enctype="multipart/form-data">
+            @if ($errors->any())
+            <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl p-4 space-y-1">
+                @foreach ($errors->all() as $error)
+                <p>{{ $error }}</p>
+                @endforeach
+            </div>
+            @endif
             @csrf
 
             <div>
@@ -133,7 +139,6 @@
                     <option value="">Pilih jenis izin</option>
                     <option value="cuti">Cuti</option>
                     <option value="sakit">Sakit</option>
-                    <option value="izin">Izin</option>
                 </select>
             </div>
 
@@ -209,5 +214,12 @@
     @endforeach
 
 </div>
+@if ($errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        openModal('izinModal');
+    });
+</script>
+@endif
 
 @endsection

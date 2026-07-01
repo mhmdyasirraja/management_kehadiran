@@ -52,7 +52,7 @@ Route::prefix('admin')
         Route::get('/approval', [ApprovalController::class, 'index'])
             ->name('admin.approval.index');
 
-        Route::patch('/approval/{izin}/approve', [ApprovalController::class, 'approve'])
+        Route::patch('/approval/{izin}/approve', [ApprovalController::class, 'approved'])
             ->name('admin.approval.approve');
 
         Route::patch('/approval/{izin}/reject', [ApprovalController::class, 'reject'])
