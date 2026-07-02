@@ -13,23 +13,20 @@ use App\Models\Karyawan;
 
 class IzinController extends Controller
 {
-    // Aturan bisnis ditaro sebagai konstanta, biar gampang diubah
-    // tanpa harus nyari-nyari angka "ajaib" di tengah logic
     private const MIN_HARI_CUTI = 7;
     private const MAX_HARI_LAPOR_SAKIT = 3;
+    private const MAX_HARI_CUTI_PER_TAHUN = 12;
 
     private function authUser()
     {
         return Auth::guard('karyawan')->user();
     }
 
-    private function authKaryawan()
+    private function authKaryawan(): Karyawan
     {
         /** @var \App\Models\User $user */
         $user = $this->authUser();
-        /** @var \App\Models\Karyawan $karyawan */
-        $karyawan = Karyawan::where('user_id', $user->id)->firstOrFail();
-        return $karyawan;
+        return Karyawan::where('user_id', $user->id)->firstOrFail();
     }
 
     public function index()
@@ -40,45 +37,80 @@ class IzinController extends Controller
             ->latest()
             ->get();
 
-        $total   = $izin->count();
-        $pending = $izin->where('status', 'pending')->count();
-        $selesai = $izin->whereIn('status', ['approved', 'rejected'])->count();
+        $total    = $izin->count();
+        $pending  = $izin->where('status', 'pending')->count();
+        $selesai  = $izin->whereIn('status', ['approved', 'rejected'])->count();
+        $sisaCuti = $this->sisaCuti($karyawan, now()->year);
 
-        return view('pages.karyawan.pengajuan', compact('izin', 'total', 'pending', 'selesai'));
+        return view('pages.karyawan.pengajuan', compact('izin', 'total', 'pending', 'selesai', 'sisaCuti'))
+            ->with('kuotaCuti', self::MAX_HARI_CUTI_PER_TAHUN);
+    }
+
+    private function hitungCutiTerpakai(Karyawan $karyawan, int $tahun): int
+    {
+        return Izin::where('karyawan_id', $karyawan->id)
+            ->where('jenis_izin', 'cuti')
+            ->whereIn('status', ['pending', 'approved'])
+            ->whereYear('tanggal_mulai', $tahun)
+            ->get(['tanggal_mulai', 'tanggal_selesai'])
+            ->sum(function ($izin) {
+                return Carbon::parse($izin->tanggal_mulai)
+                    ->diffInDays(Carbon::parse($izin->tanggal_selesai)) + 1;
+            });
+    }
+
+    private function sisaCuti(Karyawan $karyawan, int $tahun): int
+    {
+        return max(0, self::MAX_HARI_CUTI_PER_TAHUN - $this->hitungCutiTerpakai($karyawan, $tahun));
+    }
+
+    private function cekOverlapTanggal(
+        $validator,
+        Karyawan $karyawan,
+        Carbon $tanggalMulai,
+        Carbon $tanggalSelesai
+    ): void {
+        $overlap = Izin::where('karyawan_id', $karyawan->id)
+            ->whereIn('status', ['pending', 'approved'])
+            ->where('tanggal_mulai', '<=', $tanggalSelesai)
+            ->where('tanggal_selesai', '>=', $tanggalMulai)
+            ->exists();
+
+        if ($overlap) {
+            $validator->errors()->add(
+                'tanggal_mulai',
+                'Kamu sudah punya pengajuan izin lain yang tanggalnya bentrok dengan periode ini.'
+            );
+        }
     }
 
     public function store(Request $request)
     {
         $karyawan = $this->authKaryawan();
 
-        // 1. Validasi format dasar (tipe data, required, dll)
         $validator = Validator::make($request->all(), [
-            'jenis_izin'       => 'required|in:sakit,cuti', // fix: 'izin' dibuang, gak ada di enum DB
+            'jenis_izin'       => 'required|in:sakit,cuti',
             'tanggal_mulai'    => 'required|date',
             'tanggal_selesai'  => 'required|date|after_or_equal:tanggal_mulai',
             'keterangan'       => 'required|string|max:1000',
             'surat_keterangan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
-        // 2. Validasi aturan tanggal khusus (cuti H-7, sakit maks 3 hari)
-        $validator->after(function ($validator) use ($request) {
-            $this->validateAturanTanggal($validator, $request);
+        $validator->after(function ($validator) use ($request, $karyawan) {
+            $this->validateAturanTanggal($validator, $request, $karyawan);
         });
 
-        // 3. Kalau ada error, balik ke form dengan pesan error + input lama
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
 
         $data = $validator->validated();
 
-        // 4. Upload file (kalau ada)
         $path = null;
         if ($request->hasFile('surat_keterangan')) {
             $path = $request->file('surat_keterangan')->store('surat_keterangan', 'public');
         }
 
-        // 5. Simpan — karyawan_id SELALU dari session, bukan dari input user
         Izin::create([
             'karyawan_id'      => $karyawan->id,
             'jenis_izin'       => $data['jenis_izin'],
@@ -92,22 +124,18 @@ class IzinController extends Controller
         return back()->with('success', 'Pengajuan izin berhasil dikirim.');
     }
 
-    /**
-     * Cek aturan bisnis tanggal untuk masing-masing jenis izin.
-     * Dipisah dari store() biar method store() gak kepanjangan
-     * dan logic ini gampang dites/dibaca sendiri.
-     */
-    private function validateAturanTanggal($validator, Request $request): void
+    private function validateAturanTanggal($validator, Request $request, Karyawan $karyawan): void
     {
-        $jenisIzin = $request->input('jenis_izin');
-        $tanggalMulaiRaw = $request->input('tanggal_mulai');
+        $jenisIzin         = $request->input('jenis_izin');
+        $tanggalMulaiRaw   = $request->input('tanggal_mulai');
+        $tanggalSelesaiRaw = $request->input('tanggal_selesai');
 
         if (!$tanggalMulaiRaw) {
-            return; // biarin rule 'required' di atas yang nangani
+            return;
         }
 
         $tanggalMulai = Carbon::parse($tanggalMulaiRaw)->startOfDay();
-        $hariIni = Carbon::today();
+        $hariIni      = Carbon::today();
 
         if ($jenisIzin === 'cuti') {
             $minimalTanggal = $hariIni->copy()->addDays(self::MIN_HARI_CUTI);
@@ -117,6 +145,27 @@ class IzinController extends Controller
                     'tanggal_mulai',
                     'Pengajuan cuti harus diajukan minimal ' . self::MIN_HARI_CUTI . ' hari sebelum tanggal mulai.'
                 );
+            }
+
+            if ($tanggalSelesaiRaw) {
+                $tanggalSelesai = Carbon::parse($tanggalSelesaiRaw)->startOfDay();
+
+                if ($tanggalMulai->year !== $tanggalSelesai->year) {
+                    $validator->errors()->add(
+                        'tanggal_selesai',
+                        'Pengajuan cuti tidak boleh melewati pergantian tahun. Ajukan terpisah per tahun.'
+                    );
+                } else {
+                    $durasiPengajuan = $tanggalMulai->diffInDays($tanggalSelesai) + 1;
+                    $sisa = $this->sisaCuti($karyawan, $tanggalMulai->year);
+
+                    if ($durasiPengajuan > $sisa) {
+                        $validator->errors()->add(
+                            'tanggal_mulai',
+                            "Sisa kuota cuti kamu tahun ini tinggal {$sisa} hari, pengajuan ini butuh {$durasiPengajuan} hari."
+                        );
+                    }
+                }
             }
         }
 
@@ -133,6 +182,11 @@ class IzinController extends Controller
             if ($tanggalMulai->gt($hariIni)) {
                 $validator->errors()->add('tanggal_mulai', 'Tanggal sakit tidak boleh di masa depan.');
             }
+
+            if ($tanggalSelesaiRaw) {
+                $tanggalSelesai = Carbon::parse($tanggalSelesaiRaw)->startOfDay();
+                $this->cekOverlapTanggal($validator, $karyawan, $tanggalMulai, $tanggalSelesai);
+            }
         }
     }
 
@@ -143,7 +197,6 @@ class IzinController extends Controller
         abort_if($izin->karyawan_id !== $karyawan->id, 403);
         abort_if($izin->status !== 'pending', 403, 'Hanya pengajuan pending yang bisa dibatalkan.');
 
-        // Bersihin file surat biar gak numpuk sampah di storage
         if ($izin->surat_keterangan) {
             Storage::disk('public')->delete($izin->surat_keterangan);
         }

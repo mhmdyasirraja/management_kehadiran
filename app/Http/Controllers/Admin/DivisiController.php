@@ -24,12 +24,12 @@ class DivisiController extends Controller
 
         return view('pages.admin.divisi', [
             'divisi' => $divisi,
-            'role' => 'admin',
+            
             'search' => $search,
         ]);
     }
 
-    // Simpan divisi baru
+    // tambah divisi baru
     public function store(Request $request)
     {
         $request->validate([

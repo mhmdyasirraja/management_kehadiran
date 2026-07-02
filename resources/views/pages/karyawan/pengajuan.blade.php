@@ -24,7 +24,7 @@
     @endif
 
     {{-- Summary Cards --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
             <p class="text-sm text-gray-500">Total Pengajuan</p>
             <h3 class="text-2xl font-bold text-gray-800 mt-2">{{ $total }}</h3>
@@ -36,6 +36,12 @@
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
             <p class="text-sm text-gray-500">Disetujui / Ditolak</p>
             <h3 class="text-2xl font-bold text-green-600 mt-2">{{ $selesai }}</h3>
+        </div>
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+            <p class="text-sm text-gray-500">Sisa Kuota Cuti Tahun Ini</p>
+            <h3 class="text-2xl font-bold {{ $sisaCuti > 0 ? 'text-blue-600' : 'text-red-500' }} mt-2">
+                {{ $sisaCuti }} <span class="text-sm font-normal text-gray-400">/ {{ $kuotaCuti }} hari</span>
+            </h3>
         </div>
     </div>
 
