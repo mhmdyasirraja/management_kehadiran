@@ -1,9 +1,11 @@
 <?php
 namespace App\Contracts;
 
-interface IKehadiran {
-    public function checkIn(string $lokasi);
-    public function checkOut(string $lokasi);
-    public function validasiLokasi(string $lokasi): bool;
-    public function getRekapKehadiran();
+interface IKehadiran
+{
+    public function checkIn($karyawan, float $latitude, float $longitude): array;
+
+    public function checkOut($karyawan, float $latitude, float $longitude): array;
+
+    public function riwayat($karyawan);
 }
