@@ -9,6 +9,18 @@
         <p class="text-gray-400 mt-1">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</p>
     </div>
 
+    {{-- Export File --}}
+    <div class="flex justify-end gap-2 mb-4">
+    <a href="{{ route('admin.laporan.export-pdf', request()->query()) }}"
+        class="bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm flex items-center gap-2">
+        Export PDF
+    </a>
+    <a href="{{ route('admin.laporan.export-excel', request()->query()) }}"
+        class="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm flex items-center gap-2">
+        Export Excel
+    </a>
+</div>
+
    {{-- Filter Card --}}
 <div class="bg-white rounded-2xl shadow-sm p-8">
     <form method="GET" action="{{ route('admin.laporan') }}"
@@ -74,7 +86,7 @@
     @forelse($laporan as $item)
         <tr class="border-t border-gray-100">
             <td class="py-4 text-gray-700 font-medium">
-                {{ $item->nama_karyawan }}
+                {{ $item->karyawan->nama ?? '-' }}
             </td>
             <td class="py-4 text-gray-700">
                 {{ \Carbon\Carbon::parse($item->tanggal)->format('d F Y') }}

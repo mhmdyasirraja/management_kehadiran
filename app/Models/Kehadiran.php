@@ -13,7 +13,12 @@ class Kehadiran extends Model
         'tanggal',
         'jam_masuk',
         'jam_keluar',
+        'latitude_masuk',
+        'longitude_masuk',
+        'latitude_keluar',
+        'longitude_keluar',
         'status',
+        'keterangan',
     ];
 
     public function karyawan()
