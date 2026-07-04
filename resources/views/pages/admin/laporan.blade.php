@@ -9,29 +9,22 @@
         <p class="text-gray-400 mt-1">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</p>
     </div>
 
-<<<<<<< HEAD
     {{-- Export File --}}
     <div class="flex justify-end gap-2 mb-4">
-    <a href="{{ route('admin.laporan.export-pdf', request()->query()) }}"
-        class="bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm flex items-center gap-2">
-        Export PDF
-    </a>
-    <a href="{{ route('admin.laporan.export-excel', request()->query()) }}"
-        class="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm flex items-center gap-2">
-        Export Excel
-    </a>
-</div>
+        <a href="{{ route('admin.laporan.export-pdf', request()->query()) }}"
+            class="bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm flex items-center gap-2">
+            Export PDF
+        </a>
+        <a href="{{ route('admin.laporan.export-excel', request()->query()) }}"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm flex items-center gap-2">
+            Export Excel
+        </a>
+    </div>
 
-   {{-- Filter Card --}}
-<div class="bg-white rounded-2xl shadow-sm p-8">
-    <form method="GET" action="{{ route('admin.laporan') }}"
-        class="flex flex-col md:flex-row md:flex-wrap gap-4 items-stretch md:items-center">
-=======
     {{-- Filter Card --}}
     <div class="bg-white rounded-2xl shadow-sm p-8">
         <form method="GET" action="{{ route('admin.laporan') }}"
             class="flex flex-col md:flex-row md:flex-wrap gap-4 items-stretch md:items-center">
->>>>>>> fe6e9abf89f19029681d53d9cc478a6ad05df7ad
 
             <select name="nama"
                 class="w-full md:w-auto md:min-w-[220px] md:flex-1 rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
@@ -88,48 +81,44 @@
                         <th class="pb-4 font-semibold">Status</th>
                     </tr>
                 </thead>
-<<<<<<< HEAD
-                
-<tbody>
-    @forelse($laporan as $item)
-        <tr class="border-t border-gray-100">
-            <td class="py-4 text-gray-700 font-medium">
-                {{ $item->karyawan->nama ?? '-' }}
-            </td>
-            <td class="py-4 text-gray-700">
-                {{ \Carbon\Carbon::parse($item->tanggal)->format('d F Y') }}
-            </td>
-            <td class="py-4 text-gray-700">
-                {{ $item->jam_masuk ?? '-' }}
-            </td>
-            <td class="py-4 text-gray-700">
-                {{ $item->jam_keluar ?? '-' }}
-            </td>
-            <td class="py-4">
-                @php
-                    $badgeColor = match($item->status) {
-                        'hadir' => 'bg-green-100 text-green-700',
-                        'cuti' => 'bg-yellow-100 text-yellow-700',
-                        'sakit' => 'bg-blue-100 text-blue-700',
-                        'alpha' => 'bg-red-100 text-red-700',
-                        default => 'bg-gray-100 text-gray-700',
-                    };
-                @endphp
-                <span class="px-4 py-1.5 rounded-full text-sm font-medium {{ $badgeColor }}">
-                    {{ ucfirst($item->status) }}
-                </span>
-            </td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="5" class="py-10 text-center text-gray-400">
-                Belum ada data laporan
-            </td>
-        </tr>
-    @endforelse
-</tbody>
-=======
-
+                <tbody>
+                    @forelse($laporan as $item)
+                    <tr class="border-t border-gray-100">
+                        <td class="py-4 text-gray-700 font-medium">
+                            {{ $item->karyawan->nama ?? '-' }}
+                        </td>
+                        <td class="py-4 text-gray-700">
+                            {{ \Carbon\Carbon::parse($item->tanggal)->format('d F Y') }}
+                        </td>
+                        <td class="py-4 text-gray-700">
+                            {{ $item->jam_masuk ?? '-' }}
+                        </td>
+                        <td class="py-4 text-gray-700">
+                            {{ $item->jam_keluar ?? '-' }}
+                        </td>
+                        <td class="py-4">
+                            @php
+                                $badgeColor = match($item->status) {
+                                    'hadir' => 'bg-green-100 text-green-700',
+                                    'cuti' => 'bg-yellow-100 text-yellow-700',
+                                    'sakit' => 'bg-blue-100 text-blue-700',
+                                    'alpha' => 'bg-red-100 text-red-700',
+                                    default => 'bg-gray-100 text-gray-700',
+                                };
+                            @endphp
+                            <span class="px-4 py-1.5 rounded-full text-sm font-medium {{ $badgeColor }}">
+                                {{ ucfirst($item->status) }}
+                            </span>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="py-10 text-center text-gray-400">
+                            Belum ada data laporan
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
             </table>
         </div>
 
