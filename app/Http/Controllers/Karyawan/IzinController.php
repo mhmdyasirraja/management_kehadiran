@@ -94,6 +94,19 @@ class IzinController extends Controller
             'tanggal_selesai'  => 'required|date|after_or_equal:tanggal_mulai',
             'keterangan'       => 'required|string|max:1000',
             'surat_keterangan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ], [
+            'jenis_izin.required'       => 'Jenis izin wajib dipilih.',
+            'jenis_izin.in'             => 'Jenis izin tidak valid.',
+            'tanggal_mulai.required'    => 'Tanggal mulai wajib diisi.',
+            'tanggal_mulai.date'        => 'Format tanggal mulai tidak valid.',
+            'tanggal_selesai.required'  => 'Tanggal selesai wajib diisi.',
+            'tanggal_selesai.date'      => 'Format tanggal selesai tidak valid.',
+            'tanggal_selesai.after_or_equal' => 'Tanggal selesai tidak boleh sebelum tanggal mulai.',
+            'keterangan.required'       => 'Keterangan wajib diisi.',
+            'keterangan.max'            => 'Keterangan maksimal 1000 karakter.',
+            'surat_keterangan.file'     => 'File yang diunggah tidak valid.',
+            'surat_keterangan.mimes'    => 'Format file harus PDF, JPG, atau PNG.',
+            'surat_keterangan.max'      => 'Ukuran file maksimal 2MB.',
         ]);
 
         $validator->after(function ($validator) use ($request, $karyawan) {
