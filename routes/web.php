@@ -9,6 +9,7 @@ use App\Http\Controllers\Karyawan\AbsensiController;
 use App\Http\Controllers\Karyawan\IzinController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\ApprovalController;
+use App\Http\Controllers\Admin\LaporanController;
 
 Route::get('/', function () {
     return view('landing');
@@ -57,6 +58,9 @@ Route::prefix('admin')
 
         Route::patch('/approval/{izin}/reject', [ApprovalController::class, 'reject'])
             ->name('admin.approval.reject');
+
+        Route::get('/laporan', [LaporanController::class, 'index'])
+        ->name('admin.laporan');
     });
 
 // middleware karyawan
