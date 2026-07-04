@@ -1,3 +1,4 @@
+{{-- resources/views/pages/admin/laporan-pdf.blade.php --}}
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,23 +24,23 @@
     <table>
         <thead>
             <tr>
-                <th>Nama Karyawan</th>
                 <th>Tanggal</th>
+                <th>NIP</th>
+                <th>Nama Karyawan</th>
                 <th>Jam Masuk</th>
                 <th>Jam Keluar</th>
                 <th>Status</th>
-                <th>Keterangan</th>
             </tr>
         </thead>
         <tbody>
             @forelse($data as $item)
                 <tr>
-                    <td>{{ $item->karyawan->nama ?? '-' }}</td>
                     <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
+                    <td>{{ $item->karyawan->nip ?? '-' }}</td>
+                    <td>{{ $item->karyawan->nama ?? '-' }}</td>
                     <td>{{ $item->jam_masuk ?? '-' }}</td>
                     <td>{{ $item->jam_keluar ?? '-' }}</td>
                     <td><span class="badge {{ $item->status }}">{{ ucfirst($item->status) }}</span></td>
-                    <td>{{ $item->keterangan ?? '-' }}</td>
                 </tr>
             @empty
                 <tr><td colspan="6" style="text-align:center;">Tidak ada data</td></tr>

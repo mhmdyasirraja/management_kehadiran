@@ -26,24 +26,60 @@
         <form method="GET" action="{{ route('admin.laporan') }}"
             class="flex flex-col md:flex-row md:flex-wrap gap-4 items-stretch md:items-center">
 
-            <select name="nama"
-                class="w-full md:w-auto md:min-w-[220px] md:flex-1 rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-                <option value="">Semua Karyawan</option>
-                @foreach($karyawans as $k)
-                <option value="{{ $k->nama }}" {{ request('nama') == $k->nama ? 'selected' : '' }}>
-                    {{ $k->nama }}
-                </option>
+            {{-- Filter Bulan --}}
+            <select name="bulan"
+                class="w-full md:w-auto md:min-w-[160px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                <option value="">Semua Bulan</option>
+                @php
+                    $namaBulan = [
+                        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                        5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                        9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                    ];
+                @endphp
+                @foreach($namaBulan as $angka => $nama)
+                    <option value="{{ $angka }}" {{ request('bulan') == $angka ? 'selected' : '' }}>
+                        {{ $nama }}
+                    </option>
                 @endforeach
             </select>
 
-            <input type="date" name="tanggal_awal" value="{{ request('tanggal_awal') }}"
-                class="w-full md:w-auto md:min-w-[170px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+            {{-- Filter Tahun --}}
+            <select name="tahun"
+                class="w-full md:w-auto md:min-w-[140px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                <option value="">Semua Tahun</option>
+                @for($tahun = now()->year; $tahun >= now()->year - 5; $tahun--)
+                    <option value="{{ $tahun }}" {{ request('tahun') == $tahun ? 'selected' : '' }}>
+                        {{ $tahun }}
+                    </option>
+                @endfor
+            </select>
 
-            <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}"
-                class="w-full md:w-auto md:min-w-[170px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+            {{-- Filter Karyawan --}}
+            <select name="karyawan_id"
+                class="w-full md:w-auto md:min-w-[200px] md:flex-1 rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                <option value="">Semua Karyawan</option>
+                @foreach($karyawans as $k)
+                    <option value="{{ $k->id }}" {{ request('karyawan_id') == $k->id ? 'selected' : '' }}>
+                        {{ $k->nama }}
+                    </option>
+                @endforeach
+            </select>
 
+            {{-- Filter Divisi --}}
+            <select name="divisi_id"
+                class="w-full md:w-auto md:min-w-[180px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                <option value="">Semua Divisi</option>
+                @foreach($divisis as $d)
+                    <option value="{{ $d->id }}" {{ request('divisi_id') == $d->id ? 'selected' : '' }}>
+                        {{ $d->nama }}
+                    </option>
+                @endforeach
+            </select>
+
+            {{-- Filter Status --}}
             <select name="status"
-                class="w-full md:w-auto md:min-w-[170px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                class="w-full md:w-auto md:min-w-[150px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                 <option value="">Semua Status</option>
                 <option value="hadir" {{ request('status') == 'hadir' ? 'selected' : '' }}>Hadir</option>
                 <option value="cuti" {{ request('status') == 'cuti' ? 'selected' : '' }}>Cuti</option>
@@ -74,8 +110,9 @@
             <table class="w-full">
                 <thead>
                     <tr class="text-left text-gray-500 text-sm">
-                        <th class="pb-4 font-semibold">Nama Karyawan</th>
                         <th class="pb-4 font-semibold">Tanggal</th>
+                        <th class="pb-4 font-semibold">NIP</th>
+                        <th class="pb-4 font-semibold">Nama Karyawan</th>
                         <th class="pb-4 font-semibold">Jam Masuk</th>
                         <th class="pb-4 font-semibold">Jam Keluar</th>
                         <th class="pb-4 font-semibold">Status</th>
@@ -84,11 +121,14 @@
                 <tbody>
                     @forelse($laporan as $item)
                     <tr class="border-t border-gray-100">
-                        <td class="py-4 text-gray-700 font-medium">
-                            {{ $item->karyawan->nama ?? '-' }}
-                        </td>
                         <td class="py-4 text-gray-700">
                             {{ \Carbon\Carbon::parse($item->tanggal)->format('d F Y') }}
+                        </td>
+                        <td class="py-4 text-gray-700">
+                            {{ $item->karyawan->nip ?? '-' }}
+                        </td>
+                        <td class="py-4 text-gray-700 font-medium">
+                            {{ $item->karyawan->nama ?? '-' }}
                         </td>
                         <td class="py-4 text-gray-700">
                             {{ $item->jam_masuk ?? '-' }}
@@ -113,7 +153,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="py-10 text-center text-gray-400">
+                        <td colspan="6" class="py-10 text-center text-gray-400">
                             Belum ada data laporan
                         </td>
                     </tr>
