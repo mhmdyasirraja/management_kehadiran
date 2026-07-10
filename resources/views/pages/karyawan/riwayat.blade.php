@@ -73,15 +73,33 @@
                     <td class="py-3">{{ $item->jam_masuk ?? '-' }}</td>
                     <td class="py-3">{{ $item->jam_keluar ?? '-' }}</td>
                     <td class="py-3">
-                        @if($item->status === 'hadir')
-                            <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">Hadir</span>
-                        @elseif($item->status === 'terlambat')
-                            <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs">Terlambat</span>
-                        @elseif($item->status === 'izin')
-                            <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs">Izin</span>
+
+                        @if($item->status == 'Hadir')
+
+                        <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">
+                            Hadir
+                        </span>
+
+                        @elseif($item->status == 'Izin')
+
+                        <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs">
+                            Izin
+                        </span>
+
+                        @elseif($item->status == 'Sakit')
+
+                        <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs">
+                            Sakit
+                        </span>
+
                         @else
-                            <span class="bg-red-100 text-red-600 px-2 py-1 rounded text-xs">Tidak Hadir</span>
+
+                        <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
+                            {{ ucfirst($item->status) }}
+                        </span>
+
                         @endif
+
                     </td>
                 </tr>
                 @empty

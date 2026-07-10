@@ -31,16 +31,16 @@
                 class="w-full md:w-auto md:min-w-[160px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                 <option value="">Semua Bulan</option>
                 @php
-                    $namaBulan = [
-                        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
-                        5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
-                        9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
-                    ];
+                $namaBulan = [
+                1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                ];
                 @endphp
                 @foreach($namaBulan as $angka => $nama)
-                    <option value="{{ $angka }}" {{ request('bulan') == $angka ? 'selected' : '' }}>
-                        {{ $nama }}
-                    </option>
+                <option value="{{ $angka }}" {{ request('bulan') == $angka ? 'selected' : '' }}>
+                    {{ $nama }}
+                </option>
                 @endforeach
             </select>
 
@@ -49,31 +49,31 @@
                 class="w-full md:w-auto md:min-w-[140px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                 <option value="">Semua Tahun</option>
                 @for($tahun = now()->year; $tahun >= now()->year - 5; $tahun--)
-                    <option value="{{ $tahun }}" {{ request('tahun') == $tahun ? 'selected' : '' }}>
-                        {{ $tahun }}
-                    </option>
+                <option value="{{ $tahun }}" {{ request('tahun') == $tahun ? 'selected' : '' }}>
+                    {{ $tahun }}
+                </option>
                 @endfor
             </select>
 
             {{-- Filter Karyawan --}}
             <select name="karyawan_id" id="filter-karyawan"
-            class="w-full md:w-auto md:min-w-[220px] md:flex-1 rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-            <option value="">Semua Karyawan</option>
-            @foreach($karyawans as $k)
-            <option value="{{ $k->id }}" {{ request('karyawan_id') == $k->id ? 'selected' : '' }}>
-            {{ $k->nama }}
-        </option>
-    @endforeach
-</select>
+                class="w-full md:w-auto md:min-w-[220px] md:flex-1 rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                <option value="">Semua Karyawan</option>
+                @foreach($karyawans as $k)
+                <option value="{{ $k->id }}" {{ request('karyawan_id') == $k->id ? 'selected' : '' }}>
+                    {{ $k->nama }}
+                </option>
+                @endforeach
+            </select>
 
             {{-- Filter Divisi --}}
             <select name="divisi_id"
                 class="w-full md:w-auto md:min-w-[180px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                 <option value="">Semua Divisi</option>
                 @foreach($divisis as $d)
-                    <option value="{{ $d->id }}" {{ request('divisi_id') == $d->id ? 'selected' : '' }}>
-                        {{ $d->nama }}
-                    </option>
+                <option value="{{ $d->id }}" {{ request('divisi_id') == $d->id ? 'selected' : '' }}>
+                    {{ $d->nama }}
+                </option>
                 @endforeach
             </select>
 
@@ -136,19 +136,34 @@
                         <td class="py-4 text-gray-700">
                             {{ $item->jam_keluar ?? '-' }}
                         </td>
-                        <td class="py-4">
-                            @php
-                                $badgeColor = match($item->status) {
-                                    'hadir' => 'bg-green-100 text-green-700',
-                                    'cuti' => 'bg-yellow-100 text-yellow-700',
-                                    'sakit' => 'bg-blue-100 text-blue-700',
-                                    'alpha' => 'bg-red-100 text-red-700',
-                                    default => 'bg-gray-100 text-gray-700',
-                                };
-                            @endphp
-                            <span class="px-4 py-1.5 rounded-full text-sm font-medium {{ $badgeColor }}">
+                        <td class="py-3">
+
+                            @if($item->status == 'Hadir')
+
+                            <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">
+                                Hadir
+                            </span>
+
+                            @elseif($item->status == 'Izin')
+
+                            <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs">
+                                Izin
+                            </span>
+
+                            @elseif($item->status == 'Sakit')
+
+                            <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs">
+                                Sakit
+                            </span>
+
+                            @else
+
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
                                 {{ ucfirst($item->status) }}
                             </span>
+
+                            @endif
+
                         </td>
                     </tr>
                     @empty
@@ -173,22 +188,22 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    new TomSelect('#filter-karyawan', {
-        placeholder: 'Cari nama karyawan...',
-        allowEmptyOption: true,
-        create: false,
-        sortField: {
-            field: 'text',
-            direction: 'asc'
-        },
-        render: {
-            no_results: function (data, escape) {
-                return '<div class="no-results">Tidak ditemukan karyawan bernama "' + escape(data.input) + '"</div>';
+    document.addEventListener('DOMContentLoaded', function() {
+        new TomSelect('#filter-karyawan', {
+            placeholder: 'Cari nama karyawan...',
+            allowEmptyOption: true,
+            create: false,
+            sortField: {
+                field: 'text',
+                direction: 'asc'
+            },
+            render: {
+                no_results: function(data, escape) {
+                    return '<div class="no-results">Tidak ditemukan karyawan bernama "' + escape(data.input) + '"</div>';
+                }
             }
-        }
+        });
     });
-});
 </script>
 
 @endsection

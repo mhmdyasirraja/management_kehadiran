@@ -121,19 +121,19 @@
 
                             <td class="py-3">
 
-                                @if($item->status == 'hadir')
+                                @if($item->status == 'Hadir')
 
                                     <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">
                                         Hadir
                                     </span>
 
-                                @elseif($item->status == 'izin')
+                                @elseif($item->status == 'Izin')
 
                                     <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs">
                                         Izin
                                     </span>
 
-                                @elseif($item->status == 'sakit')
+                                @elseif($item->status == 'Sakit')
 
                                     <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs">
                                         Sakit
