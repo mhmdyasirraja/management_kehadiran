@@ -15,16 +15,18 @@ class DivisiController extends Controller
         $search = $request->query('search');
 
         // hitung jumlah karyawan per divisi secara otomatis
-        $divisi = Divisi::withCount('karyawan')
+        $divisi = Divisi::withCount(['karyawan' => function ($query) {
+            $query->aktif();
+        }])
             ->when($search, function ($query, $search) {
-                $query->where('nama', 'like', '%' . $search .'%');
+                $query->where('nama', 'like', '%' . $search . '%');
             })
             ->oldest()
             ->get();
 
         return view('pages.admin.divisi', [
             'divisi' => $divisi,
-            
+
             'search' => $search,
         ]);
     }
@@ -58,6 +60,10 @@ class DivisiController extends Controller
     // Hapus divisi
     public function destroy(Divisi $divisi)
     {
+        if ($divisi->karyawan()->exists()) {
+            return redirect()->route('divisi.index')
+                ->with('error', 'Divisi tidak bisa dihapus karena masih memiliki data karyawan.');
+        }
         $divisi->delete();
 
         return redirect()->route('divisi.index')->with('success', 'Divisi berhasil dihapus.');

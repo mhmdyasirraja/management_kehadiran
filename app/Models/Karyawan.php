@@ -46,4 +46,9 @@ class Karyawan extends Model
     {
         return $this->hasMany(Izin::class, 'karyawan_id');
     }
+
+    public function scopeAktif($query)
+    {
+        return $query->where('status', 'aktif');
+    }
 }
