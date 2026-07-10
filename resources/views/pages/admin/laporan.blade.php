@@ -56,15 +56,15 @@
             </select>
 
             {{-- Filter Karyawan --}}
-            <select name="karyawan_id"
-                class="w-full md:w-auto md:min-w-[200px] md:flex-1 rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-                <option value="">Semua Karyawan</option>
-                @foreach($karyawans as $k)
-                    <option value="{{ $k->id }}" {{ request('karyawan_id') == $k->id ? 'selected' : '' }}>
-                        {{ $k->nama }}
-                    </option>
-                @endforeach
-            </select>
+            <select name="karyawan_id" id="filter-karyawan"
+            class="w-full md:w-auto md:min-w-[220px] md:flex-1 rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+            <option value="">Semua Karyawan</option>
+            @foreach($karyawans as $k)
+            <option value="{{ $k->id }}" {{ request('karyawan_id') == $k->id ? 'selected' : '' }}>
+            {{ $k->nama }}
+        </option>
+    @endforeach
+</select>
 
             {{-- Filter Divisi --}}
             <select name="divisi_id"
@@ -171,4 +171,24 @@
     </div>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    new TomSelect('#filter-karyawan', {
+        placeholder: 'Cari nama karyawan...',
+        allowEmptyOption: true,
+        create: false,
+        sortField: {
+            field: 'text',
+            direction: 'asc'
+        },
+        render: {
+            no_results: function (data, escape) {
+                return '<div class="no-results">Tidak ditemukan karyawan bernama "' + escape(data.input) + '"</div>';
+            }
+        }
+    });
+});
+</script>
+
 @endsection
