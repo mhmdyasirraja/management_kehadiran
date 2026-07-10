@@ -16,13 +16,6 @@
             Perizinan
         </h2>
 
-        {{-- Flash Message --}}
-        @if(session('success'))
-        <div class="bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg p-4 mb-4">
-            {{ session('success') }}
-        </div>
-        @endif
-
         {{-- Info --}}
         <div class="bg-blue-50 border border-blue-200 text-blue-700 text-sm rounded-lg p-4 mb-6">
             <p class="font-medium mb-2">Catatan Perizinan:</p>

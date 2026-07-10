@@ -16,12 +16,6 @@
         </div>
     </div>
 
-    {{-- Flash Message --}}
-    @if(session('success'))
-    <div class="bg-green-50 border border-green-200 text-green-700 text-sm rounded-2xl p-4">
-        {{ session('success') }}
-    </div>
-    @endif
 
     {{-- Summary Cards --}}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
