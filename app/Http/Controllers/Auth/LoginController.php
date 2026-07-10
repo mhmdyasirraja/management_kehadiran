@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,26 +19,35 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         $remember    = $request->boolean('remember');
 
-        if (Auth::guard('admin')->attempt($credentials, $remember)) {
-            $user = Auth::guard('admin')->user();
+        // 1. Cari dulu user berdasarkan email, cek role-nya SEBELUM mencoba attempt di guard manapun
+        $user = User::where('email', $credentials['email'])->first();
 
-            if ($user->role === 'admin') {
-                $request->session()->regenerate();
-                return redirect('/admin/dashboard');
-            }
-
-            Auth::guard('admin')->logout();
+        if (!$user) {
+            return back()
+                ->withErrors(['email' => 'Email atau password salah.'])
+                ->onlyInput('email');
         }
 
-        if (Auth::guard('karyawan')->attempt($credentials, $remember)) {
-            $user = Auth::guard('karyawan')->user();
+        // 2. Tentukan guard yang SESUAI berdasarkan role, baru attempt di guard itu SAJA
+        $guard = match ($user->role) {
+            'admin' => 'admin',
+            'karyawan' => 'karyawan',
+            default => null,
+        };
 
-            if ($user->role === 'karyawan') {
-                $request->session()->regenerate();
-                return redirect('/karyawan/dashboard');
-            }
+        if (!$guard) {
+            return back()
+                ->withErrors(['email' => 'Role akun tidak dikenali.'])
+                ->onlyInput('email');
+        }
 
-            Auth::guard('karyawan')->logout();
+        // 3. Hanya attempt SATU KALI, di guard yang benar-benar sesuai — tidak menyentuh guard lain
+        if (Auth::guard($guard)->attempt($credentials, $remember)) {
+            $request->session()->regenerate();
+
+            return $guard === 'admin'
+                ? redirect('/admin/dashboard')
+                : redirect('/karyawan/dashboard');
         }
 
         return back()
@@ -47,8 +57,15 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('admin')->logout();
-        Auth::guard('karyawan')->logout();
+        // Tetap logout dari guard yang SEDANG aktif untuk request ini saja
+        // Cek guard mana yang sedang dipakai berdasarkan halaman asal, bukan logout paksa keduanya
+        if (Auth::guard('admin')->check()) {
+            Auth::guard('admin')->logout();
+        }
+
+        if (Auth::guard('karyawan')->check()) {
+            Auth::guard('karyawan')->logout();
+        }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

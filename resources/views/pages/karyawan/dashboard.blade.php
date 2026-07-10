@@ -2,20 +2,14 @@
 
 @section('content')
 
-@php
-$user = Auth::guard('karyawan')->user();
-$profil = $user->karyawan;
-@endphp
-
 <div class="space-y-6">
 
     {{-- Header --}}
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                {{-- ✅ Pakai optional() biar aman kalau relasi karyawan null --}}
                 <h1 class="text-2xl font-bold text-gray-800">
-                    Selamat Datang, {{ optional($profil)->nama ?? $user->name ?? 'Karyawan' }}
+                    Selamat Datang, {{ $karyawan->nama ?? 'Karyawan' }}
                 </h1>
                 <p class="text-sm text-gray-500 mt-1">
                     Pantau status kehadiran, riwayat absensi, dan informasi cuti Anda hari ini.
@@ -35,9 +29,23 @@ $profil = $user->karyawan;
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
             <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Status Hari Ini</p>
             <div class="mt-3 flex items-center justify-between">
-                <h3 class="text-xl font-bold text-green-600">Hadir</h3>
-                <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-                    Aktif
+                @php
+                    $warnaStatus = match($statusHariIni) {
+                        'Belum Check-in' => 'text-gray-400',
+                        'Sudah Check-in' => 'text-yellow-600',
+                        'Sudah Check-out' => 'text-green-600',
+                        default => 'text-gray-400',
+                    };
+                    $badgeStatus = match($statusHariIni) {
+                        'Belum Check-in' => 'bg-gray-100 text-gray-500',
+                        'Sudah Check-in' => 'bg-yellow-100 text-yellow-700',
+                        'Sudah Check-out' => 'bg-green-100 text-green-700',
+                        default => 'bg-gray-100 text-gray-500',
+                    };
+                @endphp
+                <h3 class="text-lg font-bold {{ $warnaStatus }}">{{ $statusHariIni }}</h3>
+                <span class="inline-flex items-center rounded-full {{ $badgeStatus }} px-3 py-1 text-xs font-medium">
+                    {{ $statusHariIni === 'Belum Check-in' ? 'Nonaktif' : 'Aktif' }}
                 </span>
             </div>
         </div>
@@ -45,7 +53,9 @@ $profil = $user->karyawan;
         {{-- Jam Masuk Terakhir --}}
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
             <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Jam Masuk Terakhir</p>
-            <h3 class="text-xl font-bold text-gray-800 mt-3">08:05</h3>
+            <h3 class="text-xl font-bold text-gray-800 mt-3">
+                {{ $kehadiranHariIni->jam_masuk ?? '-' }}
+            </h3>
         </div>
 
         {{-- Total Kehadiran --}}
@@ -54,7 +64,7 @@ $profil = $user->karyawan;
             <h3 class="text-xl font-bold text-gray-800 mt-3">{{ $kehadiranBulanIni }} Hari</h3>
         </div>
 
-        {{-- Sisa Cuti --}}
+        {{-- Izin Pending --}}
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
             <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Izin Pending</p>
             <h3 class="text-xl font-bold text-blue-600 mt-3">{{ $izinPending }}</h3>
@@ -83,22 +93,26 @@ $profil = $user->karyawan;
                     </thead>
 
                     <tbody class="divide-y divide-gray-100">
-                        {{-- ✅ Pakai data dari controller --}}
                         @forelse($riwayat as $hadir)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 font-medium text-gray-800">
                                 {{ \Carbon\Carbon::parse($hadir->tanggal)->format('d M Y') }}
                             </td>
-                            <td class="px-6 py-4">{{ $hadir->jam_check_in ?? '-' }}</td>
-                            <td class="px-6 py-4">{{ $hadir->jam_check_out ?? '-' }}</td>
+                            <td class="px-6 py-4">{{ $hadir->jam_masuk ?? '-' }}</td>
+                            <td class="px-6 py-4">{{ $hadir->jam_keluar ?? '-' }}</td>
                             <td class="px-6 py-4">
-                                @if($hadir->status === 'hadir')
-                                <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">Hadir</span>
-                                @elseif($hadir->status === 'terlambat')
-                                <span class="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700">Terlambat</span>
-                                @else
-                                <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">{{ $hadir->status }}</span>
-                                @endif
+                                @php
+                                    $badgeRiwayat = match($hadir->status) {
+                                        'hadir' => 'bg-green-100 text-green-700',
+                                        'cuti' => 'bg-yellow-100 text-yellow-700',
+                                        'sakit' => 'bg-blue-100 text-blue-700',
+                                        'alpha' => 'bg-red-100 text-red-700',
+                                        default => 'bg-gray-100 text-gray-700',
+                                    };
+                                @endphp
+                                <span class="inline-flex items-center rounded-full {{ $badgeRiwayat }} px-3 py-1 text-xs font-medium">
+                                    {{ ucfirst($hadir->status) }}
+                                </span>
                             </td>
                         </tr>
                         @empty
@@ -122,29 +136,28 @@ $profil = $user->karyawan;
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500">Nama</span>
                         <span class="font-medium text-gray-800">
-                            {{-- ✅ Aman dari null --}}
-                            {{ optional($profil)->nama ?? $user->name ?? '-' }}
+                            {{ $karyawan->nama ?? '-' }}
                         </span>
                     </div>
 
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500">Divisi</span>
                         <span class="font-medium text-gray-800">
-                            {{ optional($profil)->divisi->nama ?? '-' }}
+                            {{ optional($karyawan->divisi)->nama ?? '-' }}
                         </span>
                     </div>
 
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500">Email</span>
                         <span class="font-medium text-gray-800">
-                            {{ $user->email ?? '-' }}
+                            {{ optional($karyawan->user)->email ?? '-' }}
                         </span>
                     </div>
 
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500">Status</span>
                         <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-                            Aktif
+                            {{ ucfirst($karyawan->status ?? 'aktif') }}
                         </span>
                     </div>
                 </div>

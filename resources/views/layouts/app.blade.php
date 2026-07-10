@@ -1,3 +1,4 @@
+{{-- resources/views/layouts/app.blade.php --}}
 <!DOCTYPE html>
 <html lang="id">
 
@@ -13,7 +14,7 @@
     <div class="flex min-h-screen">
 
         {{-- Sidebar --}}
-        @include('components.sidebar', ['role' => $role ?? null])
+        @include('components.sidebar')
 
         {{-- Content --}}
         <main class="flex-1 p-8">

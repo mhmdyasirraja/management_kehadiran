@@ -26,16 +26,12 @@ return [
         ],
     ],
 
-// user provides
-
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
             'model' => User::class,
         ],
     ],
-
-// password reset
 
     'passwords' => [
         'users' => [
@@ -45,8 +41,6 @@ return [
             'throttle' => 60,
         ],
     ],
-
-// password timeout
 
     'password_timeout' => 10800,
 

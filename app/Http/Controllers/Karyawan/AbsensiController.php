@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Karyawan;
 
 use App\Http\Controllers\Controller;
 use App\Contracts\IKehadiran;
+use App\Models\Karyawan;
 use Illuminate\Http\Request;
 use App\Models\Kehadiran;
 use Carbon\Carbon;
@@ -13,24 +14,34 @@ class AbsensiController extends Controller
 {
     protected IKehadiran $kehadiranService;
 
-    // Interface di-inject otomatis oleh Laravel (lihat AppServiceProvider)
     public function __construct(IKehadiran $kehadiranService)
     {
         $this->kehadiranService = $kehadiranService;
     }
 
+    /**
+     * Ambil data Karyawan yang benar berdasarkan user yang sedang login.
+     */
+    private function getKaryawanAktif()
+    {
+        $user = Auth::guard('karyawan')->user();
+        return Karyawan::where('user_id', $user->id)->firstOrFail();
+    }
+
     public function formCheckIn()
     {
-        $karyawan = Auth::guard('karyawan')->user();
+        $karyawan = $this->getKaryawanAktif();
+
+        $cutoff = Carbon::today()->setTime(4, 0, 0);
+        $effectiveDate = Carbon::now()->lt($cutoff) ? Carbon::yesterday()->toDateString() : Carbon::today()->toDateString();
 
         $kehadiranHariIni = Kehadiran::where('karyawan_id', $karyawan->id)
-            ->whereDate('tanggal', Carbon::today())
+            ->whereDate('tanggal', $effectiveDate)
             ->first();
 
         $sudahCheckIn = $kehadiranHariIni && $kehadiranHariIni->jam_masuk;
         $sudahCheckOut = $kehadiranHariIni && $kehadiranHariIni->jam_keluar;
 
-        // Riwayat otomatis sesuai user login (karyawan_id)
         $riwayat = $this->kehadiranService->riwayat($karyawan);
 
         return view('pages.karyawan.absensi', compact(
@@ -49,7 +60,7 @@ class AbsensiController extends Controller
             'longitude' => 'required|numeric',
         ]);
 
-        $karyawan = Auth::guard('karyawan')->user();
+        $karyawan = $this->getKaryawanAktif();
 
         $hasil = $this->kehadiranService->checkIn(
             $karyawan,
@@ -75,7 +86,7 @@ class AbsensiController extends Controller
             'longitude' => 'required|numeric',
         ]);
 
-        $karyawan = Auth::guard('karyawan')->user();
+        $karyawan = $this->getKaryawanAktif();
 
         $hasil = $this->kehadiranService->checkOut(
             $karyawan,
@@ -91,7 +102,7 @@ class AbsensiController extends Controller
 
     public function riwayat()
     {
-        $karyawan = Auth::guard('karyawan')->user();
+        $karyawan = $this->getKaryawanAktif();
         $riwayat = $this->kehadiranService->riwayat($karyawan);
 
         return view('pages.karyawan.riwayat', compact('riwayat'));

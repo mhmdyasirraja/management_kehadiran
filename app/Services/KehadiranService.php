@@ -6,13 +6,11 @@ namespace App\Services;
 use App\Contracts\IKehadiran;
 use App\Models\Kehadiran;
 use App\Models\Lokasi;
+use App\Models\Pengaturan;
 use Carbon\Carbon;
 
 class KehadiranService implements IKehadiran
 {
-    /**
-     * Tentukan tanggal efektif absensi (reset jam 04:00 pagi).
-     */
     private function tanggalEfektif(): string
     {
         $cutoff = Carbon::today()->setTime(4, 0, 0);
@@ -21,9 +19,37 @@ class KehadiranService implements IKehadiran
             : Carbon::today()->toDateString();
     }
 
+    private function dalamRentangWaktu(string $jamMulai, string $jamSelesai): bool
+    {
+        $sekarang = Carbon::now();
+        $batasMulai = Carbon::today()->setTimeFromTimeString($jamMulai);
+        $batasSelesai = Carbon::today()->setTimeFromTimeString($jamSelesai);
+
+        return $sekarang->between($batasMulai, $batasSelesai);
+    }
+
     public function checkIn($karyawan, float $latitude, float $longitude): array
     {
-        // 1. Validasi lokasi GPS lewat Lokasi Model
+        $checkinMulai = Pengaturan::get('checkin_mulai', '06:00');
+        $checkinSelesai = Pengaturan::get('checkin_selesai', '09:00');
+
+        if (!$this->dalamRentangWaktu($checkinMulai, $checkinSelesai)) {
+            $sekarang = Carbon::now();
+            $batasMulai = Carbon::today()->setTimeFromTimeString($checkinMulai);
+
+            if ($sekarang->lt($batasMulai)) {
+                return [
+                    'success' => false,
+                    'message' => 'Belum waktunya check-in. Check-in dibuka mulai pukul ' . Carbon::parse($checkinMulai)->format('H:i'),
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => 'Waktu check-in sudah berakhir. Check-in ditutup pukul ' . Carbon::parse($checkinSelesai)->format('H:i'),
+            ];
+        }
+
         $lokasi = Lokasi::cariLokasiValid($latitude, $longitude);
 
         if (!$lokasi) {
@@ -46,9 +72,8 @@ class KehadiranService implements IKehadiran
             ];
         }
 
-        $jamMasuk = Carbon::parse($effectiveDate . ' 07:00:00');
+        $jamMasuk = Carbon::now(); // ← catat jam sungguhan, bukan standar 07:00 lagi
 
-        // 2. Simpan ke Kehadiran Model -> Database
         Kehadiran::create([
             'karyawan_id'      => $karyawan->id,
             'tanggal'          => $effectiveDate,
@@ -60,12 +85,32 @@ class KehadiranService implements IKehadiran
 
         return [
             'success' => true,
-            'message' => 'Check-in berhasil pukul ' . Carbon::now()->format('H:i') . ' di ' . $lokasi->nama_lokasi,
+            'message' => 'Check-in berhasil pukul ' . $jamMasuk->format('H:i') . ' di ' . $lokasi->nama_lokasi,
         ];
     }
 
     public function checkOut($karyawan, float $latitude, float $longitude): array
     {
+        $checkoutMulai = Pengaturan::get('checkout_mulai', '16:00');
+        $checkoutSelesai = Pengaturan::get('checkout_selesai', '19:00');
+
+        if (!$this->dalamRentangWaktu($checkoutMulai, $checkoutSelesai)) {
+            $sekarang = Carbon::now();
+            $batasMulai = Carbon::today()->setTimeFromTimeString($checkoutMulai);
+
+            if ($sekarang->lt($batasMulai)) {
+                return [
+                    'success' => false,
+                    'message' => 'Belum waktunya check-out. Check-out dibuka mulai pukul ' . Carbon::parse($checkoutMulai)->format('H:i'),
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => 'Waktu check-out sudah berakhir. Check-out ditutup pukul ' . Carbon::parse($checkoutSelesai)->format('H:i'),
+            ];
+        }
+
         $lokasi = Lokasi::cariLokasiValid($latitude, $longitude);
 
         if (!$lokasi) {
@@ -95,17 +140,17 @@ class KehadiranService implements IKehadiran
             ];
         }
 
-        $jamKeluarStd = Carbon::parse($effectiveDate . ' 17:00:00');
+        $jamKeluar = Carbon::now(); // ← catat jam sungguhan, bukan standar 17:00 lagi
 
         $kehadiran->update([
-            'jam_keluar'       => $jamKeluarStd->toTimeString(),
+            'jam_keluar'       => $jamKeluar->toTimeString(),
             'latitude_keluar'  => $latitude,
             'longitude_keluar' => $longitude,
         ]);
 
         return [
             'success' => true,
-            'message' => 'Check-out berhasil pukul 17:00 di ' . $lokasi->nama_lokasi,
+            'message' => 'Check-out berhasil pukul ' . $jamKeluar->format('H:i') . ' di ' . $lokasi->nama_lokasi,
         ];
     }
 

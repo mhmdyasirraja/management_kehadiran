@@ -1,95 +1,83 @@
-<body class="bg-gray-100">
+<!-- SIDEBAR -->
+<aside class="w-64 bg-white border-r border-gray-200 flex flex-col p-5">
 
-    <div class="flex min-h-screen">
-
-        <!-- SIDEBAR -->
-        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col p-5">
-
-            <!-- LOGO -->
-            <div class="flex items-center gap-2 mb-8">
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Absen<span class="text-blue-600">Ku</span>
-                </h1>
-            </div>
-
-            <!-- MENU -->
-            <nav class="flex flex-col gap-2 text-sm">
-
-                @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->role === 'admin')
-
-                    <a href="{{ url('/admin/dashboard') }}"
-                        class="px-3 py-2 rounded-lg {{ request()->is('admin/dashboard') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Dashboard
-                    </a>
-
-                    <a href="{{ url('/admin/divisi') }}"
-                        class="px-3 py-2 rounded-lg {{ request()->is('admin/divisi*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Management Divisi
-                    </a>
-
-                    <a href="{{ url('/admin/karyawan') }}"
-                        class="px-3 py-2 rounded-lg {{ request()->is('admin/karyawan*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Management Karyawan
-                    </a>
-
-                    <a href="{{ url('/admin/approval') }}"
-                        class="px-3 py-2 rounded-lg {{ request()->is('admin/approval*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Perizinan
-                    </a>
-
-                    <a href="{{ url('/admin/laporan') }}"
-                        class="px-3 py-2 rounded-lg {{ request()->is('admin/laporan*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Laporan
-                    </a>
-
-                    <a href="{{ url('/admin/pengaturan') }}"
-                        class="px-3 py-2 rounded-lg {{ request()->is('admin/pengaturan*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Pengaturan
-                    </a>
-
-                @elseif(Auth::guard('karyawan')->check() && Auth::guard('karyawan')->user()->role === 'karyawan')
-
-                    <a href="{{ url('/karyawan/dashboard') }}"
-                        class="px-3 py-2 rounded-lg {{ request()->is('karyawan/dashboard') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Dashboard
-                    </a>
-
-                    <a href="{{ url('/karyawan/absensi') }}"
-                        class="px-3 py-2 rounded-lg {{ request()->is('karyawan/absensi*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Absensi
-                    </a>
-
-                    <a href="{{ url('/karyawan/izin') }}"
-                        class="px-3 py-2 rounded-lg {{ request()->is('karyawan/izin*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Perizinan
-                    </a>
-
-                    <a href="{{ url('/karyawan/riwayat') }}"
-                        class="px-3 py-2 rounded-lg {{ request()->is('karyawan/riwayat*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
-                        Riwayat
-                    </a>
-
-                @endif
-
-            </nav>
-
-            <!-- BOTTOM -->
-            <div class="mt-auto pt-6 border-t border-gray-200">
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 hover:bg-red-100 hover:text-red-600">
-                        <span>Logout</span>
-                    </button>
-
-
-                </form>
-            </div>
-
-        </aside>
-
+    <!-- LOGO -->
+    <div class="flex items-center gap-2 mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">
+            Absen<span class="text-blue-600">Ku</span>
+        </h1>
     </div>
 
-</body>
+    <!-- MENU -->
+    <nav class="flex flex-col gap-2 text-sm">
 
-</html>
+        @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->role === 'admin')
+
+            <a href="{{ url('/admin/dashboard') }}"
+                class="px-3 py-2 rounded-lg {{ request()->is('admin/dashboard') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url('/admin/divisi') }}"
+                class="px-3 py-2 rounded-lg {{ request()->is('admin/divisi*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                Management Divisi
+            </a>
+
+            <a href="{{ url('/admin/karyawan') }}"
+                class="px-3 py-2 rounded-lg {{ request()->is('admin/karyawan*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                Management Karyawan
+            </a>
+
+            <a href="{{ url('/admin/approval') }}"
+                class="px-3 py-2 rounded-lg {{ request()->is('admin/approval*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                Perizinan
+            </a>
+
+            <a href="{{ url('/admin/laporan') }}"
+                class="px-3 py-2 rounded-lg {{ request()->is('admin/laporan*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                Laporan
+            </a>
+
+            <a href="{{ url('/admin/pengaturan') }}"
+                class="px-3 py-2 rounded-lg {{ request()->is('admin/pengaturan*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                Pengaturan
+            </a>
+
+        @elseif(Auth::guard('karyawan')->check() && Auth::guard('karyawan')->user()->role === 'karyawan')
+
+            <a href="{{ url('/karyawan/dashboard') }}"
+                class="px-3 py-2 rounded-lg {{ request()->is('karyawan/dashboard') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url('/karyawan/absensi') }}"
+                class="px-3 py-2 rounded-lg {{ request()->is('karyawan/absensi*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                Absensi
+            </a>
+
+            <a href="{{ url('/karyawan/izin') }}"
+                class="px-3 py-2 rounded-lg {{ request()->is('karyawan/izin*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                Perizinan
+            </a>
+
+            <a href="{{ url('/karyawan/riwayat') }}"
+                class="px-3 py-2 rounded-lg {{ request()->is('karyawan/riwayat*') ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                Riwayat
+            </a>
+
+        @endif
+
+    </nav>
+
+    <!-- BOTTOM -->
+    <div class="mt-auto pt-6 border-t border-gray-200">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit"
+                class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 hover:bg-red-100 hover:text-red-600">
+                <span>Logout</span>
+            </button>
+        </form>
+    </div>
+
+</aside>

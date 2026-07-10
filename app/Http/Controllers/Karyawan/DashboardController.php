@@ -6,14 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kehadiran;
 use App\Models\Izin;
+use App\Models\Karyawan;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth; 
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function dashboard()
     {
-        $karyawan          = Auth::guard('karyawan')->user(); // ✅ Fix di sini
+        // Ambil User yang login, lalu terjemahkan ke data Karyawan yang benar
+        $user = Auth::guard('karyawan')->user();
+        $karyawan = Karyawan::where('user_id', $user->id)->firstOrFail();
+
         $kehadiranBulanIni = Kehadiran::where('karyawan_id', $karyawan->id)
             ->whereMonth('tanggal', Carbon::now()->month)
             ->whereYear('tanggal', Carbon::now()->year)
@@ -28,7 +32,7 @@ class DashboardController extends Controller
             ->first();
 
         $statusHariIni = $kehadiranHariIni
-            ? ($kehadiranHariIni->jam_check_out
+            ? ($kehadiranHariIni->jam_keluar
                 ? 'Sudah Check-out'
                 : 'Sudah Check-in')
             : 'Belum Check-in';

@@ -10,6 +10,7 @@ use App\Http\Controllers\Karyawan\IzinController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\ApprovalController;
 use App\Http\Controllers\Admin\LaporanController;
+use App\Http\Controllers\Admin\PengaturanController;
 
 Route::get('/', function () {
     return view('landing');
@@ -67,6 +68,12 @@ Route::prefix('admin')
         
         Route::get('/laporan/export-excel', [LaporanController::class, 'exportExcel'])
         ->name('admin.laporan.export-excel');
+
+        Route::get('/pengaturan', [PengaturanController::class, 'index'])->name('admin.pengaturan');
+        Route::post('/pengaturan/lokasi', [PengaturanController::class, 'storeLokasi'])->name('admin.pengaturan.lokasi.store');
+        Route::put('/pengaturan/lokasi/{lokasi}', [PengaturanController::class, 'updateLokasi'])->name('admin.pengaturan.lokasi.update');
+        Route::delete('/pengaturan/lokasi/{lokasi}', [PengaturanController::class, 'destroyLokasi'])->name('admin.pengaturan.lokasi.destroy');
+        Route::put('/pengaturan/jam-kerja', [PengaturanController::class, 'updateJamKerja'])->name('admin.pengaturan.jamkerja.update');
     });
 
 // middleware karyawan
