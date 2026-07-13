@@ -78,71 +78,127 @@
     {{-- TABEL ABSENSI TERBARU --}}
     <div class="bg-white rounded-xl shadow-sm p-6">
 
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold text-gray-800">Absensi Terbaru</h2>
-            <a href="{{ url('/admin/laporan') }}" class="text-sm text-blue-600 hover:underline">
-                Lihat Semua →
-            </a>
-        </div>
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-800">Absensi Terbaru</h2>
+        <a href="{{ url('/admin/laporan') }}" class="text-sm text-blue-600 hover:underline">
+            Lihat Semua →
+        </a>
+    </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
 
-                <thead class="text-gray-500 border-b text-xs uppercase">
-                    <tr>
-                        <th class="py-3 pr-4">No</th>
-                        <th class="py-3 pr-4">Nama</th>
-                        <th class="py-3 text-center">Tanggal</th>
-                        <th class="py-3 text-center">Masuk</th>
-                        <th class="py-3 text-center">Keluar</th>
-                        <th class="py-3 text-center">Status</th>
-                    </tr>
-                </thead>
+            <thead class="text-gray-500 border-b text-xs uppercase">
+                <tr>
+                    <th class="py-3 pr-4">No</th>
+                    <th class="py-3 pr-4">Nama</th>
+                    <th class="py-3 text-center">Tanggal</th>
+                    <th class="py-3 text-center">Masuk</th>
+                    <th class="py-3 text-center">Keluar</th>
+                    <th class="py-3 text-center">Status</th>
+                </tr>
+            </thead>
 
-                <tbody class="text-gray-700 divide-y divide-gray-100">
+            <tbody class="text-gray-700 divide-y divide-gray-100">
 
-                    @forelse ($absensiTerbaru as $index => $absen)
-                    <tr class="hover:bg-gray-50 transition">
-                        <td class="py-3 pr-4 text-gray-400">{{ $index + 1 }}</td>
-                        <td class="py-3 pr-4 font-medium">
-                            {{ $absen->karyawan->nama ?? '-' }}
-                        </td>
-                        <td class="py-3 text-center text-gray-500">
-                            {{ \Carbon\Carbon::parse($absen->tanggal)->format('d M Y') }}
-                        </td>
-                        <td class="py-3 text-center">
-                            {{ $absen->jam_masuk ? \Carbon\Carbon::parse($absen->jam_masuk)->format('H:i') : '—' }}
-                        </td>
-                        <td class="py-3 text-center">
-                            {{ $absen->jam_keluar ? \Carbon\Carbon::parse($absen->jam_keluar)->format('H:i') : '—' }}
-                        </td>
-                        <td class="py-3 text-center">
-                            @php
-                                $st = $absen->status;
-                            @endphp
-                            @if ($st === 'Hadir' || $st === 'hadir')
-                                <span class="px-2.5 py-1 text-xs rounded-full bg-green-100 text-green-700 font-medium">Hadir</span>
-                            @elseif ($st === 'Izin' || $st === 'izin')
-                                <span class="px-2.5 py-1 text-xs rounded-full bg-yellow-100 text-yellow-600 font-medium">Izin</span>
-                            @elseif ($st === 'Terlambat' || $st === 'terlambat')
-                                <span class="px-2.5 py-1 text-xs rounded-full bg-yellow-100 text-yellow-600 font-medium">Terlambat</span>
-                            @else
-                                <span class="px-2.5 py-1 text-xs rounded-full bg-red-100 text-red-600 font-medium">Tidak Hadir</span>
-                            @endif
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="6" class="py-8 text-center text-gray-400">
-                            Belum ada data absensi.
-                        </td>
-                    </tr>
-                    @endforelse
+                @forelse ($absensiTerbaru as $index => $absen)
 
-                </tbody>
+                <tr class="hover:bg-slate-50 transition duration-200">
 
-            </table>
-        </div>
+                    <td class="py-4 px-4 text-gray-400 font-medium">
+                        {{ $index + 1 }}
+                    </td>
+
+                    <td class="py-4 px-4">
+
+                        <div class="flex items-center gap-3">
+
+                            {{-- Avatar --}}
+                            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 font-semibold flex items-center justify-center">
+                                {{ strtoupper(substr($absen->karyawan->nama ?? '-',0,1)) }}
+                            </div>
+
+                            <div>
+                                <p class="font-semibold text-gray-800">
+                                    {{ $absen->karyawan->nama ?? '-' }}
+                                </p>
+
+                                <p class="text-xs text-gray-400">
+                                    Karyawan
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <td class="py-4 px-4 text-center text-gray-500">
+                        {{ \Carbon\Carbon::parse($absen->tanggal)->format('d M Y') }}
+                    </td>
+
+                    <td class="py-4 px-4 text-center font-medium text-gray-700">
+                        {{ $absen->jam_masuk ? \Carbon\Carbon::parse($absen->jam_masuk)->format('H:i') : '—' }}
+                    </td>
+
+                    <td class="py-4 px-4 text-center font-medium text-gray-700">
+                        {{ $absen->jam_keluar ? \Carbon\Carbon::parse($absen->jam_keluar)->format('H:i') : '—' }}
+                    </td>
+
+                    <td class="py-4 px-4 text-center">
+
+                        @php
+                            $st = strtolower($absen->status);
+                        @endphp
+
+                        @if($st == 'hadir')
+
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                Hadir
+                            </span>
+
+                        @elseif($st == 'izin')
+
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold">
+                                <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                                Izin
+                            </span>
+
+                        @elseif($st == 'terlambat')
+
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-semibold">
+                                <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+                                Terlambat
+                            </span>
+
+                        @else
+
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
+                                <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                                Tidak Hadir
+                            </span>
+
+                        @endif
+
+                    </td>
+
+                </tr>
+
+                @empty
+
+                <tr>
+
+                    <td colspan="6" class="py-10 text-center text-gray-400">
+                        Belum ada data absensi.
+                    </td>
+
+                </tr>
+
+                @endforelse
+
+            </tbody>
+
+        </table>
 
     </div>
 
