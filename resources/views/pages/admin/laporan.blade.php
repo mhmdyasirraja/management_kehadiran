@@ -101,75 +101,111 @@
     </div>
 
     {{-- Table Card --}}
-    <div class="bg-white rounded-2xl shadow-sm p-8">
-        <h2 class="text-xl font-bold text-gray-800 pb-4 border-b border-gray-200 mb-6">
-            Riwayat Kehadiran Karyawan
-        </h2>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-8 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h2 class="text-xl font-bold text-gray-900">Riwayat Kehadiran Karyawan</h2>
+                <p class="text-sm text-gray-500 mt-0.5">Menampilkan seluruh data absensi berdasarkan filter terpilih.</p>
+            </div>
+            <div class="text-sm font-medium text-gray-500 bg-gray-50 px-4 py-2 rounded-xl self-start sm:self-center">
+                Total: <span class="text-blue-600 font-bold">{{ $laporan->total() ?? 0 }}</span> Data
+            </div>
+        </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full min-w-[800px] text-left border-collapse">
                 <thead>
-                    <tr class="text-left text-gray-500 text-sm">
-                        <th class="pb-4 font-semibold">Tanggal</th>
-                        <th class="pb-4 font-semibold">NIP</th>
-                        <th class="pb-4 font-semibold">Nama Karyawan</th>
-                        <th class="pb-4 font-semibold">Jam Masuk</th>
-                        <th class="pb-4 font-semibold">Jam Keluar</th>
-                        <th class="pb-4 font-semibold">Status</th>
+                    <tr class="bg-gray-50/70 border-b border-gray-100 text-xs font-bold uppercase tracking-wider text-gray-500">
+                        <th class="py-4 px-6">Tanggal</th>
+                        <th class="py-4 px-6">Karyawan</th>
+                        <th class="py-4 px-6">Jam Masuk</th>
+                        <th class="py-4 px-6">Jam Keluar</th>
+                        <th class="py-4 px-6 text-center">Status</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-100 text-sm">
                     @forelse($laporan as $item)
-                    <tr class="border-t border-gray-100">
-                        <td class="py-4 text-gray-700">
-                            {{ \Carbon\Carbon::parse($item->tanggal)->format('d F Y') }}
+                    <tr class="hover:bg-gray-50/50 transition-colors duration-150">
+                        <!-- Tanggal -->
+                        <td class="py-4 px-6 text-gray-600 font-medium whitespace-nowrap">
+                            {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}
                         </td>
-                        <td class="py-4 text-gray-700">
-                            {{ $item->karyawan->nip ?? '-' }}
+                        
+                        <!-- Profil Karyawan (Stacked NIP & Nama) -->
+                        <td class="py-4 px-6 whitespace-nowrap">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center font-semibold text-sm border border-blue-100/50 uppercase">
+                                    {{ substr($item->karyawan->nama ?? 'K', 0, 2) }}
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-gray-900 font-semibold hover:text-blue-600 transition-colors">
+                                        {{ $item->karyawan->nama ?? '-' }}
+                                    </span>
+                                    <span class="text-xs text-gray-400 font-mono">
+                                        {{ $item->karyawan->nip ?? '-' }}
+                                    </span>
+                                </div>
+                            </div>
                         </td>
-                        <td class="py-4 text-gray-700 font-medium">
-                            {{ $item->karyawan->nama ?? '-' }}
-                        </td>
-                        <td class="py-4 text-gray-700">
-                            {{ $item->jam_masuk ?? '-' }}
-                        </td>
-                        <td class="py-4 text-gray-700">
-                            {{ $item->jam_keluar ?? '-' }}
-                        </td>
-                        <td class="py-3">
-
-                            @if($item->status == 'Hadir')
-
-                            <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-xs">
-                                Hadir
-                            </span>
-
-                            @elseif($item->status == 'Izin')
-
-                            <span class="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs">
-                                Izin
-                            </span>
-
-                            @elseif($item->status == 'Sakit')
-
-                            <span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded text-xs">
-                                Sakit
-                            </span>
-
+                        
+                        <!-- Jam Masuk -->
+                        <td class="py-4 px-6 whitespace-nowrap">
+                            @if($item->jam_masuk)
+                                <span class="text-gray-700 font-medium bg-gray-100/80 px-2.5 py-1 rounded-lg text-xs font-mono">
+                                    {{ \Carbon\Carbon::parse($item->jam_masuk)->format('H:i') }}
+                                </span>
                             @else
-
-                            <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
-                                {{ ucfirst($item->status) }}
-                            </span>
-
+                                <span class="text-gray-400 font-mono">-</span>
                             @endif
+                        </td>
+                        
+                        <!-- Jam Keluar -->
+                        <td class="py-4 px-6 whitespace-nowrap">
+                            @if($item->jam_keluar)
+                                <span class="text-gray-700 font-medium bg-gray-100/80 px-2.5 py-1 rounded-lg text-xs font-mono">
+                                    {{ \Carbon\Carbon::parse($item->jam_keluar)->format('H:i') }}
+                                </span>
+                            @else
+                                <span class="text-gray-400 font-mono">-</span>
+                            @endif
+                        </td>
+                        
+                        <!-- Status Badge (Case-Insensitive Handling) -->
+                        <td class="py-4 px-6 text-center whitespace-nowrap">
+                            @php 
+                                $statusClean = strtolower($item->status ?? ''); 
+                            @endphp
 
+                            @if($statusClean == 'hadir')
+                                <span class="inline-flex items-center justify-center bg-emerald-50 text-emerald-700 border border-emerald-200/60 px-3 py-1 rounded-xl text-xs font-semibold min-w-[70px]">
+                                    Hadir
+                                </span>
+                            @elseif($statusClean == 'izin' || $statusClean == 'cuti')
+                                <span class="inline-flex items-center justify-center bg-blue-50 text-blue-700 border border-blue-200/60 px-3 py-1 rounded-xl text-xs font-semibold min-w-[70px]">
+                                    {{ ucfirst($item->status) }}
+                                </span>
+                            @elseif($statusClean == 'sakit')
+                                <span class="inline-flex items-center justify-center bg-amber-50 text-amber-700 border border-amber-200/60 px-3 py-1 rounded-xl text-xs font-semibold min-w-[70px]">
+                                    Sakit
+                                </span>
+                            |@elseif($statusClean == 'alpha')
+                                <span class="inline-flex items-center justify-center bg-rose-50 text-rose-700 border border-rose-200/60 px-3 py-1 rounded-xl text-xs font-semibold min-w-[70px]">
+                                    Alpha
+                                </span>
+                            @else
+                                <span class="inline-flex items-center justify-center bg-gray-50 text-gray-600 border border-gray-200 px-3 py-1 rounded-xl text-xs font-semibold min-w-[70px]">
+                                    {{ ucfirst($item->status ?? '-') }}
+                                </span>
+                            @endif
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="py-10 text-center text-gray-400">
-                            Belum ada data laporan
+                        <td colspan="5" class="py-16 text-center">
+                            <div class="flex flex-col items-center justify-center gap-2">
+                                <span class="text-3xl text-gray-300">📋</span>
+                                <p class="text-gray-400 font-medium">Belum ada data laporan yang sesuai</p>
+                            </div>
                         </td>
                     </tr>
                     @endforelse
@@ -179,13 +215,11 @@
 
         {{-- Pagination --}}
         @if($laporan->hasPages())
-        <div class="mt-6 pt-6 border-t border-gray-100">
+        <div class="p-6 bg-gray-50/50 border-t border-gray-100">
             {{ $laporan->links() }}
         </div>
         @endif
     </div>
-
-</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
