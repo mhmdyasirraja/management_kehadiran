@@ -28,7 +28,7 @@
 
             {{-- Filter Bulan --}}
             <select name="bulan"
-                class="w-full md:w-auto md:min-w-[160px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                class="w-full md:w-auto rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                 <option value="">Semua Bulan</option>
                 @php
                 $namaBulan = [
@@ -46,7 +46,7 @@
 
             {{-- Filter Tahun --}}
             <select name="tahun"
-                class="w-full md:w-auto md:min-w-[140px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                class="w-full md:w-auto  rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                 <option value="">Semua Tahun</option>
                 @for($tahun = now()->year; $tahun >= now()->year - 5; $tahun--)
                 <option value="{{ $tahun }}" {{ request('tahun') == $tahun ? 'selected' : '' }}>
@@ -57,7 +57,7 @@
 
             {{-- Filter Karyawan --}}
             <select name="karyawan_id" id="filter-karyawan"
-                class="w-full md:w-auto md:min-w-[220px] md:flex-1 rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                class="w-full md:w-auto md:flex-1 rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                 <option value="">Semua Karyawan</option>
                 @foreach($karyawans as $k)
                 <option value="{{ $k->id }}" {{ request('karyawan_id') == $k->id ? 'selected' : '' }}>
@@ -68,7 +68,7 @@
 
             {{-- Filter Divisi --}}
             <select name="divisi_id"
-                class="w-full md:w-auto md:min-w-[180px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                class="w-full md:w-auto rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                 <option value="">Semua Divisi</option>
                 @foreach($divisis as $d)
                 <option value="{{ $d->id }}" {{ request('divisi_id') == $d->id ? 'selected' : '' }}>
@@ -79,7 +79,7 @@
 
             {{-- Filter Status --}}
             <select name="status"
-                class="w-full md:w-auto md:min-w-[150px] rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                class="w-full md:w-auto rounded-xl border border-gray-200 px-4 py-3 text-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
                 <option value="">Semua Status</option>
                 <option value="hadir" {{ request('status') == 'hadir' ? 'selected' : '' }}>Hadir</option>
                 <option value="cuti" {{ request('status') == 'cuti' ? 'selected' : '' }}>Cuti</option>
@@ -113,7 +113,7 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full min-w-[800px] text-left border-collapse">
+            <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-gray-50/70 border-b border-gray-100 text-xs font-bold uppercase tracking-wider text-gray-500">
                         <th class="py-4 px-6">Tanggal</th>
@@ -177,23 +177,23 @@
                             @endphp
 
                             @if($statusClean == 'hadir')
-                                <span class="inline-flex items-center justify-center bg-emerald-50 text-emerald-700 border border-emerald-200/60 px-3 py-1 rounded-xl text-xs font-semibold min-w-[70px]">
+                                <span class="inline-flex items-center justify-center bg-emerald-50 text-emerald-700 border border-emerald-200/60 px-3 py-1 rounded-xl text-xs font-semibold ">
                                     Hadir
                                 </span>
                             @elseif($statusClean == 'izin' || $statusClean == 'cuti')
-                                <span class="inline-flex items-center justify-center bg-blue-50 text-blue-700 border border-blue-200/60 px-3 py-1 rounded-xl text-xs font-semibold min-w-[70px]">
+                                <span class="inline-flex items-center justify-center bg-blue-50 text-blue-700 border border-blue-200/60 px-3 py-1 rounded-xl text-xs font-semibold ">
                                     {{ ucfirst($item->status) }}
                                 </span>
                             @elseif($statusClean == 'sakit')
-                                <span class="inline-flex items-center justify-center bg-amber-50 text-amber-700 border border-amber-200/60 px-3 py-1 rounded-xl text-xs font-semibold min-w-[70px]">
+                                <span class="inline-flex items-center justify-center bg-amber-50 text-amber-700 border border-amber-200/60 px-3 py-1 rounded-xl text-xs font-semibold ">
                                     Sakit
                                 </span>
                             |@elseif($statusClean == 'alpha')
-                                <span class="inline-flex items-center justify-center bg-rose-50 text-rose-700 border border-rose-200/60 px-3 py-1 rounded-xl text-xs font-semibold min-w-[70px]">
+                                <span class="inline-flex items-center justify-center bg-rose-50 text-rose-700 border border-rose-200/60 px-3 py-1 rounded-xl text-xs font-semibold ">
                                     Alpha
                                 </span>
                             @else
-                                <span class="inline-flex items-center justify-center bg-gray-50 text-gray-600 border border-gray-200 px-3 py-1 rounded-xl text-xs font-semibold min-w-[70px]">
+                                <span class="inline-flex items-center justify-center bg-gray-50 text-gray-600 border border-gray-200 px-3 py-1 rounded-xl text-xs font-semibold ">
                                     {{ ucfirst($item->status ?? '-') }}
                                 </span>
                             @endif

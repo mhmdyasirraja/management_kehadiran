@@ -10,7 +10,7 @@
     ])
 
     {{-- Info Card --}}
-    <div class="bg-gradient-to-r from-blue-50 to-indigo-50/50 border border-blue-100 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
+    <div class="bg-gradient-to- from-blue-50 to-indigo-50/50 border border-blue-100 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
         <div class="p-2 bg-blue-600 text-white rounded-xl shadow-sm hidden sm:block">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -73,7 +73,7 @@
 
         {{-- Table Area --}}
         <div class="overflow-x-auto">
-            <table class="w-full min-w-[800px] text-left border-collapse">
+            <table class="w-full  text-left border-collapse">
                 <thead>
                     <tr class="bg-gray-50/70 border-b border-gray-100 text-xs font-bold uppercase tracking-wider text-gray-500">
                         <th class="py-4 px-6 w-16 text-center">No</th>
@@ -123,15 +123,15 @@
                         <!-- Status Badge -->
                         <td class="py-4 px-6 text-center whitespace-nowrap">
                             @if($item->status === 'pending')
-                                <span class="inline-flex items-center justify-center bg-amber-50 text-amber-700 border border-amber-200/60 px-3 py-1 rounded-xl text-xs font-bold min-w-[85px]">
+                                <span class="inline-flex items-center justify-center bg-amber-50 text-amber-700 border border-amber-200/60 px-3 py-1 rounded-xl text-xs font-bold">
                                     Pending
                                 </span>
                             @elseif($item->status === 'approved')
-                                <span class="inline-flex items-center justify-center bg-emerald-50 text-emerald-700 border border-emerald-200/60 px-3 py-1 rounded-xl text-xs font-bold min-w-[85px]">
+                                <span class="inline-flex items-center justify-center bg-emerald-50 text-emerald-700 border border-emerald-200/60 px-3 py-1 rounded-xl text-xs font-bold">
                                     Approved
                                 </span>
                             @else
-                                <span class="inline-flex items-center justify-center bg-rose-50 text-rose-700 border border-rose-200/60 px-3 py-1 rounded-xl text-xs font-bold min-w-[85px]">
+                                <span class="inline-flex items-center justify-center bg-rose-50 text-rose-700 border border-rose-200/60 px-3 py-1 rounded-xl text-xs font-bold">
                                     Rejected
                                 </span>
                             @endif
@@ -223,7 +223,7 @@
                     </div>
                 @else
                     <div class="text-xs text-gray-400 italic bg-gray-50 border border-dashed border-gray-200 p-4 rounded-xl text-center">
-                        Tidak ada berkas/surat keterangan yang dilampirkan.
+                        🔒 Tidak ada berkas/surat keterangan yang dilampirkan.
                     </div>
                 @endif
             </div>
@@ -233,7 +233,7 @@
             <div class="border-t border-gray-100 pt-4 flex gap-3">
                 <form method="POST" action="{{ route('admin.approval.approve', $item) }}" class="w-1/2">
                     @csrf
-                    @php echo method_field('PATCH'); @endphp
+                    @method('PATCH')
                     <button type="submit"
                         class="w-full py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-xl hover:bg-emerald-700 shadow-sm transition-colors">
                         Setujui Permohonan
@@ -241,7 +241,7 @@
                 </form>
                 <form method="POST" action="{{ route('admin.approval.reject', $item) }}" class="w-1/2">
                     @csrf
-                    @php echo method_field('PATCH'); @endphp
+                    @method('PATCH')
                     <button type="submit"
                         class="w-full py-2.5 bg-rose-600 text-white text-sm font-bold rounded-xl hover:bg-rose-700 shadow-sm transition-colors">
                         Tolak Permohonan
